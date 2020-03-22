@@ -1,0 +1,73 @@
+scalar Date
+scalar DateTime
+scalar BigInt
+
+type Query {
+  runningWorkout(id: ID!): RunningWorkout
+  runningWorkouts: [RunningWorkout!]!
+  runningTotalsByMonth: [RunningTotals!]!
+  runningTotalsByDay: [RunningTotals!]!
+}
+
+type Mutation {
+  createRunningWorkout(
+    email: String!,
+    startDate: DateTime!,
+    endDate: DateTime!,
+    totalDistance: Float!,
+    totalDistanceUnit: String!,
+    duration: Float!,
+    durationUnit: String!,
+    totalEnergyBurned: Float!,
+    totalEnergyBurnedUnit: String!,
+    totalAscent: Float,
+    totalAscentUnit: String,
+    sourceName: String
+  ): RunningWorkout
+}
+
+type Post {
+  id: ID!
+  published: Boolean!
+  title: String!
+  content: String!
+}
+
+type RunningWorkout {
+  id: ID!
+  createdAt: DateTime!
+  email: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  totalAscent: Float!
+  totalAscentUnit: String
+  totalDistance: Float
+  totalDistanceUnit: String!
+  duration: Float!
+  durationUnit: String!
+  totalEnergyBurned: Float!
+  totalEnergyBurnedUnit: String!
+  sourceName: String
+}
+
+type RunningTotals {
+  year: Int!
+  totalDistance: Float!
+  totalDistanceUnit: String!
+  months: [RunningTotalsByMonth!]
+  days: [RunningTotalsByDay!]
+}
+
+type RunningTotalsByMonth {
+  month: Int!
+  totalDistance: Float!
+  totalDistanceUnit: String!
+  runningWorkouts: [RunningWorkout!]!
+}
+
+type RunningTotalsByDay {
+  day: Int!
+  totalDistance: Float!
+  totalDistanceUnit: String!
+  runningWorkouts: [RunningWorkout!]!
+}
