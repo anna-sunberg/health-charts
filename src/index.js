@@ -17,8 +17,8 @@ import 'tachyons'
 import './index.css'
 
 const port = process.env.PORT || 4000;
-fetch(`http://localhost:${port}/import`);
-const client = new ApolloClient({ uri: `http://localhost:${port}/api` })
+fetch('/import');
+const client = new ApolloClient({ uri: '/api' })
 
 ReactDOM.render(
   <ApolloProvider client={client}>

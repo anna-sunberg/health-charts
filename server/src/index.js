@@ -35,7 +35,6 @@ server.express.get('/*', (req, res, next) => {
 });
 
 const port = process.env.PORT || 4000;
-
 server.start({
   port,
   endpoint: '/api',
