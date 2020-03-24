@@ -1,12 +1,14 @@
 const { GraphQLServer } = require('graphql-yoga');
 const express = require('express');
 const path = require('path');
+const cookieParser = require('cookie-parser')
 const { prisma } = require('./generated/prisma-client');
 const BigInt = require('apollo-type-bigint');
 const mergeResolvers = require('graphql-merge-resolvers');
 const GraphQLDateTime = require('graphql-type-datetime');
 const runningResolvers = require('./resolvers/running');
 const importRunningFromStrava = require('./import');
+const stravaOAuth = require('./strava-oauth');
 
 const resolvers = mergeResolvers.merge([
   runningResolvers,
@@ -24,6 +26,8 @@ const server = new GraphQLServer({
   },
 });
 
+server.express.use(cookieParser());
+server.express.use('/auth', stravaOAuth);
 server.express.route('/import').get(importRunningFromStrava);
 server.express.use(express.static(path.join(__dirname, '../../', 'build')));
 server.express.get('/*', (req, res, next) => {
