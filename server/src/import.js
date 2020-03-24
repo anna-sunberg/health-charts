@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const { STRAVA_ACCESS_TOKEN } = process.env;
 
-(async () => {
+module.exports = async (req, res, next) => {
   const [latest] = await prisma.runningWorkouts({
     orderBy: 'startDate_ASC',
     last: 1
@@ -36,4 +36,6 @@ const { STRAVA_ACCESS_TOKEN } = process.env;
       sourceName: 'strava'
     });
   }));
-})();
+
+  res.json({ inserted: activityList.length });
+};

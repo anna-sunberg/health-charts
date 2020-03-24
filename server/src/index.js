@@ -4,6 +4,7 @@ const BigInt = require('apollo-type-bigint');
 const mergeResolvers = require('graphql-merge-resolvers');
 const GraphQLDateTime = require('graphql-type-datetime');
 const runningResolvers = require('./resolvers/running');
+const importRunningFromStrava = require('./import');
 
 const resolvers = mergeResolvers.merge([
   runningResolvers,
@@ -20,5 +21,7 @@ const server = new GraphQLServer({
     prisma,
   },
 })
+
+server.express.route('/import').get(importRunningFromStrava);
 
 server.start(() => console.log('Server is running on http://localhost:4000'))
