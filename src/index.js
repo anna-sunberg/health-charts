@@ -1,24 +1,25 @@
-import React, {Fragment} from 'react'
-import ReactDOM from 'react-dom'
+import React, {Fragment} from 'react';
+import ReactDOM from 'react-dom';
 import {
   NavLink,
   Link,
   BrowserRouter as Router,
   Route,
   Switch,
-} from 'react-router-dom'
-import { ApolloProvider } from '@apollo/react-hooks'
-import ApolloClient from 'apollo-boost'
+} from 'react-router-dom';
+import { ApolloProvider } from '@apollo/react-hooks';
+import ApolloClient from 'apollo-boost';
 
-import RunningDailyPage from './components/RunningDailyPage'
-import RunningMonthlyPage from './components/RunningMonthlyPage'
+import RunningDailyPage from './components/RunningDailyPage';
+import RunningMonthlyPage from './components/RunningMonthlyPage';
 
-import 'tachyons'
-import './index.css'
+import 'tachyons';
+import './index.css';
 
 const port = process.env.PORT || 4000;
-fetch('/import');
-const client = new ApolloClient({ uri: '/api' })
+const API_URL = process.env.NODE_ENV === 'development' ? `http://localhost:${port}` : '';
+fetch(`${API_URL}/import`);
+const client = new ApolloClient({ uri: `${API_URL}/api` });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
@@ -62,4 +63,4 @@ ReactDOM.render(
     </Router>
   </ApolloProvider>,
   document.getElementById('root'),
-)
+);
