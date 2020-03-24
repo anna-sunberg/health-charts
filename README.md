@@ -3,9 +3,11 @@
 ## TODO
 
 - [ ] Add cycling
-- [ ] Add line with avg pace
+- [ ] Add active calories [heatmap](https://apexcharts.com/javascript-chart-demos/heatmap-charts/basic/)
+- [ ] Add heatmap with number of workouts
+- [ ] Add line with avg pace to monthly
 - [ ] Add count of workouts to cumulative graph
-- [ ] Add Home page
+- [ ] Add Home page w/ this week/this month stats
 
 ## To run
 

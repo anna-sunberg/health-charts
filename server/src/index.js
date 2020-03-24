@@ -1,4 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga');
+const express = require('express');
+const path = require('path');
 const { prisma } = require('./generated/prisma-client');
 const BigInt = require('apollo-type-bigint');
 const mergeResolvers = require('graphql-merge-resolvers');
@@ -15,13 +17,27 @@ const resolvers = mergeResolvers.merge([
 ]);
 
 const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
+  typeDefs: path.join(__dirname, 'schema.graphql'),
   resolvers,
   context: {
     prisma,
   },
-})
+});
 
 server.express.route('/import').get(importRunningFromStrava);
+server.express.use(express.static(path.join(__dirname, '../../', 'build')));
+server.express.get('/*', (req, res, next) => {
+  if (req.path.indexOf('/api') === 0) {
+    next();
+  } else {
+    res.sendFile(path.join(__dirname, '../../', 'build', 'index.html'));
+  }
+});
 
-server.start(() => console.log('Server is running on http://localhost:4000'))
+const port = process.env.PORT || 4000;
+
+server.start({
+  port,
+  endpoint: '/api',
+  playground: '/api'
+}, () => console.log(`Server is running on http://localhost:${port}`));
