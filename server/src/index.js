@@ -29,16 +29,20 @@ const server = new GraphQLServer({
 
 server.express.use(cookieParser());
 server.express.all('*', async (req, res, next) => {
-  if (!req.cookies.jwt) {
-    return res.redirect('/auth');
+  if (req.path.indexOf('/auth') === 0) {
+    next();
+  } else {
+    if (!req.cookies.jwt) {
+      return res.redirect('/auth');
+    }
+    const userId = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+    const user = await prisma.user({ id: userId });
+    if (!user) {
+      return res.redirect('/auth');
+    }
+    req.user = user;
+    next();
   }
-  const userId = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
-  const user = await prisma.user({ id: userId });
-  if (!user) {
-    return res.redirect('/auth');
-  }
-  req.user = user;
-  next();
 });
 server.express.use('/auth', stravaOAuth);
 server.express.route('/import').get(importRunningFromStrava);
