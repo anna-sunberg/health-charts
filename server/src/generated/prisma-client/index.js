@@ -11,6 +11,10 @@ var models = [
   {
     name: "RunningWorkout",
     embedded: false
+  },
+  {
+    name: "User",
+    embedded: false
   }
 ];
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
@@ -19,13 +23,3 @@ exports.Prisma = prisma_lib_1.makePrismaClientClass({
   endpoint: `https://eu1.prisma.sh/anna-osipova-32eef7/health-charts/dev`
 });
 exports.prisma = new exports.Prisma();
-var models = [
-  {
-    name: "Post",
-    embedded: false
-  },
-  {
-    name: "RunningWorkout",
-    embedded: false
-  }
-];

@@ -21,3 +21,16 @@ type RunningWorkout {
   totalAscentUnit: String @default(value: "km")
   sourceName: String
 }
+
+type User {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  stravaId: String! @unique
+  stravaUsername: String!
+  firstName: String!
+  lastName: String!
+  sex: String!
+  accessToken: String!
+  refreshToken: String!
+  accessTokenExpiresAt: Int!
+}
