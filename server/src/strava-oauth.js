@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 const qs = require('qs');
+const { prisma } = require('./generated/prisma-client');
 
   const router = express();
   router.get('/', (req, res) => {
@@ -17,27 +18,48 @@ const qs = require('qs');
   });
 
   router.get('/callback', async (req, res, next) => {
-    const { code } = req.query;
-    const uri = 'https://www.strava.com/api/v3/oauth/token?' +
-      qs.stringify({
-        'client_id': process.env.OAUTH_CLIENT_ID,
-        'client_secret': process.env.OAUTH_CLIENT_SECRET,
-        'grant_type': 'authorization_code',
-        'code': code
+    try {
+      const { code } = req.query;
+      const uri = 'https://www.strava.com/api/v3/oauth/token?' +
+        qs.stringify({
+          'client_id': process.env.OAUTH_CLIENT_ID,
+          'client_secret': process.env.OAUTH_CLIENT_SECRET,
+          'grant_type': 'authorization_code',
+          'code': code
+        });
+      const response = await fetch(uri, { method: 'post' });
+
+      const {
+        refresh_token: refreshToken,
+        access_token: accessToken,
+        expires_at: accessTokenExpiresAt,
+        athlete: {
+          id: stravaId,
+          username: stravaUsername,
+          firstname: firstName,
+          lastname: lastName,
+          sex
+        }
+      } = await response.json();
+
+    let user = await prisma.user({ stravaId: `${stravaId}` });
+    if (!user) {
+      user = await prisma.createUser({
+        accessToken,
+        accessTokenExpiresAt,
+        refreshToken,
+        stravaId,
+        stravaUsername,
+        sex: sex === 'F' ? 'female' : 'male'
       });
-    const response = await fetch(uri, { method: 'post' });
-    const {
-      refresh_token: refreshToken,
-      access_token: accessToken,
-      athlete: {
-        id: athleteId,
-        username,
-        firstname,
-        lastname
-      }
-    } = await response.json();
-    res.cookie('jwt', jwt.sign(data.access_token, process.env.JWT_SECRET));
+    }
+
+    res.cookie('jwt', jwt.sign(user.id, process.env.JWT_SECRET));
     res.redirect('/');
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
   });
 
   module.exports = router;
