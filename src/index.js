@@ -16,10 +16,8 @@ import RunningMonthlyPage from './components/RunningMonthlyPage';
 import 'tachyons';
 import './index.css';
 
-const port = process.env.PORT || 4000;
-const API_URL = process.env.NODE_ENV === 'development' ? `http://localhost:${port}` : '';
-fetch(`${API_URL}/import`);
-const client = new ApolloClient({ uri: `${API_URL}/api` });
+fetch('/import');
+const client = new ApolloClient({ uri: '/api' });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
