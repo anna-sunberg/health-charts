@@ -1,14 +1,8 @@
-type Post {
-  id: ID! @id
-  published: Boolean! @default(value: false)
-  title: String!
-  content: String!
-}
-
 type RunningWorkout {
   id: ID! @id
+  stravaId: String!
   createdAt: DateTime! @createdAt
-  email: String!
+  userId: String!
   startDate: DateTime!
   endDate: DateTime!
   totalDistance: Float!
@@ -19,6 +13,24 @@ type RunningWorkout {
   totalEnergyBurnedUnit: String! @default(value: "kcal")
   totalAscent: Float
   totalAscentUnit: String @default(value: "km")
+  sourceName: String
+}
+
+type CyclingWorkout {
+  id: ID! @id
+  stravaId: String!
+  createdAt: DateTime! @createdAt
+  userId: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  totalDistance: Float!
+  totalDistanceUnit: String! @default(value: "km")
+  duration: Float!
+  durationUnit: String! @default(value: "min")
+  totalEnergyBurned: Float!
+  totalEnergyBurnedUnit: String! @default(value: "kcal")
+  totalAscent: Float!
+  totalAscentUnit: String! @default(value: "m")
   sourceName: String
 }
 

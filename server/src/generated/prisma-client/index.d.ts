@@ -16,7 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  post: (where?: PostWhereInput) => Promise<boolean>;
+  cyclingWorkout: (where?: CyclingWorkoutWhereInput) => Promise<boolean>;
   runningWorkout: (where?: RunningWorkoutWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -40,25 +40,27 @@ export interface Prisma {
    * Queries
    */
 
-  post: (where: PostWhereUniqueInput) => PostNullablePromise;
-  posts: (args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
+  cyclingWorkout: (
+    where: CyclingWorkoutWhereUniqueInput
+  ) => CyclingWorkoutNullablePromise;
+  cyclingWorkouts: (args?: {
+    where?: CyclingWorkoutWhereInput;
+    orderBy?: CyclingWorkoutOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Post>;
-  postsConnection: (args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
+  }) => FragmentableArray<CyclingWorkout>;
+  cyclingWorkoutsConnection: (args?: {
+    where?: CyclingWorkoutWhereInput;
+    orderBy?: CyclingWorkoutOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => PostConnectionPromise;
+  }) => CyclingWorkoutConnectionPromise;
   runningWorkout: (
     where: RunningWorkoutWhereUniqueInput
   ) => RunningWorkoutNullablePromise;
@@ -105,22 +107,28 @@ export interface Prisma {
    * Mutations
    */
 
-  createPost: (data: PostCreateInput) => PostPromise;
-  updatePost: (args: {
-    data: PostUpdateInput;
-    where: PostWhereUniqueInput;
-  }) => PostPromise;
-  updateManyPosts: (args: {
-    data: PostUpdateManyMutationInput;
-    where?: PostWhereInput;
+  createCyclingWorkout: (
+    data: CyclingWorkoutCreateInput
+  ) => CyclingWorkoutPromise;
+  updateCyclingWorkout: (args: {
+    data: CyclingWorkoutUpdateInput;
+    where: CyclingWorkoutWhereUniqueInput;
+  }) => CyclingWorkoutPromise;
+  updateManyCyclingWorkouts: (args: {
+    data: CyclingWorkoutUpdateManyMutationInput;
+    where?: CyclingWorkoutWhereInput;
   }) => BatchPayloadPromise;
-  upsertPost: (args: {
-    where: PostWhereUniqueInput;
-    create: PostCreateInput;
-    update: PostUpdateInput;
-  }) => PostPromise;
-  deletePost: (where: PostWhereUniqueInput) => PostPromise;
-  deleteManyPosts: (where?: PostWhereInput) => BatchPayloadPromise;
+  upsertCyclingWorkout: (args: {
+    where: CyclingWorkoutWhereUniqueInput;
+    create: CyclingWorkoutCreateInput;
+    update: CyclingWorkoutUpdateInput;
+  }) => CyclingWorkoutPromise;
+  deleteCyclingWorkout: (
+    where: CyclingWorkoutWhereUniqueInput
+  ) => CyclingWorkoutPromise;
+  deleteManyCyclingWorkouts: (
+    where?: CyclingWorkoutWhereInput
+  ) => BatchPayloadPromise;
   createRunningWorkout: (
     data: RunningWorkoutCreateInput
   ) => RunningWorkoutPromise;
@@ -168,9 +176,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  post: (
-    where?: PostSubscriptionWhereInput
-  ) => PostSubscriptionPayloadSubscription;
+  cyclingWorkout: (
+    where?: CyclingWorkoutSubscriptionWhereInput
+  ) => CyclingWorkoutSubscriptionPayloadSubscription;
   runningWorkout: (
     where?: RunningWorkoutSubscriptionWhereInput
   ) => RunningWorkoutSubscriptionPayloadSubscription;
@@ -187,23 +195,47 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type PostOrderByInput =
+export type CyclingWorkoutOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "published_ASC"
-  | "published_DESC"
-  | "title_ASC"
-  | "title_DESC"
-  | "content_ASC"
-  | "content_DESC";
+  | "stravaId_ASC"
+  | "stravaId_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "userId_ASC"
+  | "userId_DESC"
+  | "startDate_ASC"
+  | "startDate_DESC"
+  | "endDate_ASC"
+  | "endDate_DESC"
+  | "totalDistance_ASC"
+  | "totalDistance_DESC"
+  | "totalDistanceUnit_ASC"
+  | "totalDistanceUnit_DESC"
+  | "duration_ASC"
+  | "duration_DESC"
+  | "durationUnit_ASC"
+  | "durationUnit_DESC"
+  | "totalEnergyBurned_ASC"
+  | "totalEnergyBurned_DESC"
+  | "totalEnergyBurnedUnit_ASC"
+  | "totalEnergyBurnedUnit_DESC"
+  | "totalAscent_ASC"
+  | "totalAscent_DESC"
+  | "totalAscentUnit_ASC"
+  | "totalAscentUnit_DESC"
+  | "sourceName_ASC"
+  | "sourceName_DESC";
 
 export type RunningWorkoutOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "stravaId_ASC"
+  | "stravaId_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
-  | "email_ASC"
-  | "email_DESC"
+  | "userId_ASC"
+  | "userId_DESC"
   | "startDate_ASC"
   | "startDate_DESC"
   | "endDate_ASC"
@@ -251,11 +283,11 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type PostWhereUniqueInput = AtLeastOne<{
+export type CyclingWorkoutWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface PostWhereInput {
+export interface CyclingWorkoutWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -270,39 +302,163 @@ export interface PostWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  published?: Maybe<Boolean>;
-  published_not?: Maybe<Boolean>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  content?: Maybe<String>;
-  content_not?: Maybe<String>;
-  content_in?: Maybe<String[] | String>;
-  content_not_in?: Maybe<String[] | String>;
-  content_lt?: Maybe<String>;
-  content_lte?: Maybe<String>;
-  content_gt?: Maybe<String>;
-  content_gte?: Maybe<String>;
-  content_contains?: Maybe<String>;
-  content_not_contains?: Maybe<String>;
-  content_starts_with?: Maybe<String>;
-  content_not_starts_with?: Maybe<String>;
-  content_ends_with?: Maybe<String>;
-  content_not_ends_with?: Maybe<String>;
-  AND?: Maybe<PostWhereInput[] | PostWhereInput>;
-  OR?: Maybe<PostWhereInput[] | PostWhereInput>;
-  NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
+  stravaId?: Maybe<String>;
+  stravaId_not?: Maybe<String>;
+  stravaId_in?: Maybe<String[] | String>;
+  stravaId_not_in?: Maybe<String[] | String>;
+  stravaId_lt?: Maybe<String>;
+  stravaId_lte?: Maybe<String>;
+  stravaId_gt?: Maybe<String>;
+  stravaId_gte?: Maybe<String>;
+  stravaId_contains?: Maybe<String>;
+  stravaId_not_contains?: Maybe<String>;
+  stravaId_starts_with?: Maybe<String>;
+  stravaId_not_starts_with?: Maybe<String>;
+  stravaId_ends_with?: Maybe<String>;
+  stravaId_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  userId?: Maybe<String>;
+  userId_not?: Maybe<String>;
+  userId_in?: Maybe<String[] | String>;
+  userId_not_in?: Maybe<String[] | String>;
+  userId_lt?: Maybe<String>;
+  userId_lte?: Maybe<String>;
+  userId_gt?: Maybe<String>;
+  userId_gte?: Maybe<String>;
+  userId_contains?: Maybe<String>;
+  userId_not_contains?: Maybe<String>;
+  userId_starts_with?: Maybe<String>;
+  userId_not_starts_with?: Maybe<String>;
+  userId_ends_with?: Maybe<String>;
+  userId_not_ends_with?: Maybe<String>;
+  startDate?: Maybe<DateTimeInput>;
+  startDate_not?: Maybe<DateTimeInput>;
+  startDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  startDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  startDate_lt?: Maybe<DateTimeInput>;
+  startDate_lte?: Maybe<DateTimeInput>;
+  startDate_gt?: Maybe<DateTimeInput>;
+  startDate_gte?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  endDate_not?: Maybe<DateTimeInput>;
+  endDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  endDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  endDate_lt?: Maybe<DateTimeInput>;
+  endDate_lte?: Maybe<DateTimeInput>;
+  endDate_gt?: Maybe<DateTimeInput>;
+  endDate_gte?: Maybe<DateTimeInput>;
+  totalDistance?: Maybe<Float>;
+  totalDistance_not?: Maybe<Float>;
+  totalDistance_in?: Maybe<Float[] | Float>;
+  totalDistance_not_in?: Maybe<Float[] | Float>;
+  totalDistance_lt?: Maybe<Float>;
+  totalDistance_lte?: Maybe<Float>;
+  totalDistance_gt?: Maybe<Float>;
+  totalDistance_gte?: Maybe<Float>;
+  totalDistanceUnit?: Maybe<String>;
+  totalDistanceUnit_not?: Maybe<String>;
+  totalDistanceUnit_in?: Maybe<String[] | String>;
+  totalDistanceUnit_not_in?: Maybe<String[] | String>;
+  totalDistanceUnit_lt?: Maybe<String>;
+  totalDistanceUnit_lte?: Maybe<String>;
+  totalDistanceUnit_gt?: Maybe<String>;
+  totalDistanceUnit_gte?: Maybe<String>;
+  totalDistanceUnit_contains?: Maybe<String>;
+  totalDistanceUnit_not_contains?: Maybe<String>;
+  totalDistanceUnit_starts_with?: Maybe<String>;
+  totalDistanceUnit_not_starts_with?: Maybe<String>;
+  totalDistanceUnit_ends_with?: Maybe<String>;
+  totalDistanceUnit_not_ends_with?: Maybe<String>;
+  duration?: Maybe<Float>;
+  duration_not?: Maybe<Float>;
+  duration_in?: Maybe<Float[] | Float>;
+  duration_not_in?: Maybe<Float[] | Float>;
+  duration_lt?: Maybe<Float>;
+  duration_lte?: Maybe<Float>;
+  duration_gt?: Maybe<Float>;
+  duration_gte?: Maybe<Float>;
+  durationUnit?: Maybe<String>;
+  durationUnit_not?: Maybe<String>;
+  durationUnit_in?: Maybe<String[] | String>;
+  durationUnit_not_in?: Maybe<String[] | String>;
+  durationUnit_lt?: Maybe<String>;
+  durationUnit_lte?: Maybe<String>;
+  durationUnit_gt?: Maybe<String>;
+  durationUnit_gte?: Maybe<String>;
+  durationUnit_contains?: Maybe<String>;
+  durationUnit_not_contains?: Maybe<String>;
+  durationUnit_starts_with?: Maybe<String>;
+  durationUnit_not_starts_with?: Maybe<String>;
+  durationUnit_ends_with?: Maybe<String>;
+  durationUnit_not_ends_with?: Maybe<String>;
+  totalEnergyBurned?: Maybe<Float>;
+  totalEnergyBurned_not?: Maybe<Float>;
+  totalEnergyBurned_in?: Maybe<Float[] | Float>;
+  totalEnergyBurned_not_in?: Maybe<Float[] | Float>;
+  totalEnergyBurned_lt?: Maybe<Float>;
+  totalEnergyBurned_lte?: Maybe<Float>;
+  totalEnergyBurned_gt?: Maybe<Float>;
+  totalEnergyBurned_gte?: Maybe<Float>;
+  totalEnergyBurnedUnit?: Maybe<String>;
+  totalEnergyBurnedUnit_not?: Maybe<String>;
+  totalEnergyBurnedUnit_in?: Maybe<String[] | String>;
+  totalEnergyBurnedUnit_not_in?: Maybe<String[] | String>;
+  totalEnergyBurnedUnit_lt?: Maybe<String>;
+  totalEnergyBurnedUnit_lte?: Maybe<String>;
+  totalEnergyBurnedUnit_gt?: Maybe<String>;
+  totalEnergyBurnedUnit_gte?: Maybe<String>;
+  totalEnergyBurnedUnit_contains?: Maybe<String>;
+  totalEnergyBurnedUnit_not_contains?: Maybe<String>;
+  totalEnergyBurnedUnit_starts_with?: Maybe<String>;
+  totalEnergyBurnedUnit_not_starts_with?: Maybe<String>;
+  totalEnergyBurnedUnit_ends_with?: Maybe<String>;
+  totalEnergyBurnedUnit_not_ends_with?: Maybe<String>;
+  totalAscent?: Maybe<Float>;
+  totalAscent_not?: Maybe<Float>;
+  totalAscent_in?: Maybe<Float[] | Float>;
+  totalAscent_not_in?: Maybe<Float[] | Float>;
+  totalAscent_lt?: Maybe<Float>;
+  totalAscent_lte?: Maybe<Float>;
+  totalAscent_gt?: Maybe<Float>;
+  totalAscent_gte?: Maybe<Float>;
+  totalAscentUnit?: Maybe<String>;
+  totalAscentUnit_not?: Maybe<String>;
+  totalAscentUnit_in?: Maybe<String[] | String>;
+  totalAscentUnit_not_in?: Maybe<String[] | String>;
+  totalAscentUnit_lt?: Maybe<String>;
+  totalAscentUnit_lte?: Maybe<String>;
+  totalAscentUnit_gt?: Maybe<String>;
+  totalAscentUnit_gte?: Maybe<String>;
+  totalAscentUnit_contains?: Maybe<String>;
+  totalAscentUnit_not_contains?: Maybe<String>;
+  totalAscentUnit_starts_with?: Maybe<String>;
+  totalAscentUnit_not_starts_with?: Maybe<String>;
+  totalAscentUnit_ends_with?: Maybe<String>;
+  totalAscentUnit_not_ends_with?: Maybe<String>;
+  sourceName?: Maybe<String>;
+  sourceName_not?: Maybe<String>;
+  sourceName_in?: Maybe<String[] | String>;
+  sourceName_not_in?: Maybe<String[] | String>;
+  sourceName_lt?: Maybe<String>;
+  sourceName_lte?: Maybe<String>;
+  sourceName_gt?: Maybe<String>;
+  sourceName_gte?: Maybe<String>;
+  sourceName_contains?: Maybe<String>;
+  sourceName_not_contains?: Maybe<String>;
+  sourceName_starts_with?: Maybe<String>;
+  sourceName_not_starts_with?: Maybe<String>;
+  sourceName_ends_with?: Maybe<String>;
+  sourceName_not_ends_with?: Maybe<String>;
+  AND?: Maybe<CyclingWorkoutWhereInput[] | CyclingWorkoutWhereInput>;
+  OR?: Maybe<CyclingWorkoutWhereInput[] | CyclingWorkoutWhereInput>;
+  NOT?: Maybe<CyclingWorkoutWhereInput[] | CyclingWorkoutWhereInput>;
 }
 
 export type RunningWorkoutWhereUniqueInput = AtLeastOne<{
@@ -324,6 +480,20 @@ export interface RunningWorkoutWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  stravaId?: Maybe<String>;
+  stravaId_not?: Maybe<String>;
+  stravaId_in?: Maybe<String[] | String>;
+  stravaId_not_in?: Maybe<String[] | String>;
+  stravaId_lt?: Maybe<String>;
+  stravaId_lte?: Maybe<String>;
+  stravaId_gt?: Maybe<String>;
+  stravaId_gte?: Maybe<String>;
+  stravaId_contains?: Maybe<String>;
+  stravaId_not_contains?: Maybe<String>;
+  stravaId_starts_with?: Maybe<String>;
+  stravaId_not_starts_with?: Maybe<String>;
+  stravaId_ends_with?: Maybe<String>;
+  stravaId_not_ends_with?: Maybe<String>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -332,20 +502,20 @@ export interface RunningWorkoutWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
+  userId?: Maybe<String>;
+  userId_not?: Maybe<String>;
+  userId_in?: Maybe<String[] | String>;
+  userId_not_in?: Maybe<String[] | String>;
+  userId_lt?: Maybe<String>;
+  userId_lte?: Maybe<String>;
+  userId_gt?: Maybe<String>;
+  userId_gte?: Maybe<String>;
+  userId_contains?: Maybe<String>;
+  userId_not_contains?: Maybe<String>;
+  userId_starts_with?: Maybe<String>;
+  userId_not_starts_with?: Maybe<String>;
+  userId_ends_with?: Maybe<String>;
+  userId_not_ends_with?: Maybe<String>;
   startDate?: Maybe<DateTimeInput>;
   startDate_not?: Maybe<DateTimeInput>;
   startDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -608,28 +778,59 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface PostCreateInput {
+export interface CyclingWorkoutCreateInput {
   id?: Maybe<ID_Input>;
-  published?: Maybe<Boolean>;
-  title: String;
-  content: String;
+  stravaId: String;
+  userId: String;
+  startDate: DateTimeInput;
+  endDate: DateTimeInput;
+  totalDistance: Float;
+  totalDistanceUnit?: Maybe<String>;
+  duration: Float;
+  durationUnit?: Maybe<String>;
+  totalEnergyBurned: Float;
+  totalEnergyBurnedUnit?: Maybe<String>;
+  totalAscent: Float;
+  totalAscentUnit?: Maybe<String>;
+  sourceName?: Maybe<String>;
 }
 
-export interface PostUpdateInput {
-  published?: Maybe<Boolean>;
-  title?: Maybe<String>;
-  content?: Maybe<String>;
+export interface CyclingWorkoutUpdateInput {
+  stravaId?: Maybe<String>;
+  userId?: Maybe<String>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  totalDistance?: Maybe<Float>;
+  totalDistanceUnit?: Maybe<String>;
+  duration?: Maybe<Float>;
+  durationUnit?: Maybe<String>;
+  totalEnergyBurned?: Maybe<Float>;
+  totalEnergyBurnedUnit?: Maybe<String>;
+  totalAscent?: Maybe<Float>;
+  totalAscentUnit?: Maybe<String>;
+  sourceName?: Maybe<String>;
 }
 
-export interface PostUpdateManyMutationInput {
-  published?: Maybe<Boolean>;
-  title?: Maybe<String>;
-  content?: Maybe<String>;
+export interface CyclingWorkoutUpdateManyMutationInput {
+  stravaId?: Maybe<String>;
+  userId?: Maybe<String>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  totalDistance?: Maybe<Float>;
+  totalDistanceUnit?: Maybe<String>;
+  duration?: Maybe<Float>;
+  durationUnit?: Maybe<String>;
+  totalEnergyBurned?: Maybe<Float>;
+  totalEnergyBurnedUnit?: Maybe<String>;
+  totalAscent?: Maybe<Float>;
+  totalAscentUnit?: Maybe<String>;
+  sourceName?: Maybe<String>;
 }
 
 export interface RunningWorkoutCreateInput {
   id?: Maybe<ID_Input>;
-  email: String;
+  stravaId: String;
+  userId: String;
   startDate: DateTimeInput;
   endDate: DateTimeInput;
   totalDistance: Float;
@@ -644,7 +845,8 @@ export interface RunningWorkoutCreateInput {
 }
 
 export interface RunningWorkoutUpdateInput {
-  email?: Maybe<String>;
+  stravaId?: Maybe<String>;
+  userId?: Maybe<String>;
   startDate?: Maybe<DateTimeInput>;
   endDate?: Maybe<DateTimeInput>;
   totalDistance?: Maybe<Float>;
@@ -659,7 +861,8 @@ export interface RunningWorkoutUpdateInput {
 }
 
 export interface RunningWorkoutUpdateManyMutationInput {
-  email?: Maybe<String>;
+  stravaId?: Maybe<String>;
+  userId?: Maybe<String>;
   startDate?: Maybe<DateTimeInput>;
   endDate?: Maybe<DateTimeInput>;
   totalDistance?: Maybe<Float>;
@@ -707,15 +910,24 @@ export interface UserUpdateManyMutationInput {
   accessTokenExpiresAt?: Maybe<Int>;
 }
 
-export interface PostSubscriptionWhereInput {
+export interface CyclingWorkoutSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PostWhereInput>;
-  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  node?: Maybe<CyclingWorkoutWhereInput>;
+  AND?: Maybe<
+    | CyclingWorkoutSubscriptionWhereInput[]
+    | CyclingWorkoutSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    | CyclingWorkoutSubscriptionWhereInput[]
+    | CyclingWorkoutSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    | CyclingWorkoutSubscriptionWhereInput[]
+    | CyclingWorkoutSubscriptionWhereInput
+  >;
 }
 
 export interface RunningWorkoutSubscriptionWhereInput {
@@ -753,57 +965,103 @@ export interface NodeNode {
   id: ID_Output;
 }
 
-export interface Post {
+export interface CyclingWorkout {
   id: ID_Output;
-  published: Boolean;
-  title: String;
-  content: String;
+  stravaId: String;
+  createdAt: DateTimeOutput;
+  userId: String;
+  startDate: DateTimeOutput;
+  endDate: DateTimeOutput;
+  totalDistance: Float;
+  totalDistanceUnit: String;
+  duration: Float;
+  durationUnit: String;
+  totalEnergyBurned: Float;
+  totalEnergyBurnedUnit: String;
+  totalAscent: Float;
+  totalAscentUnit: String;
+  sourceName?: String;
 }
 
-export interface PostPromise extends Promise<Post>, Fragmentable {
+export interface CyclingWorkoutPromise
+  extends Promise<CyclingWorkout>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
-  published: () => Promise<Boolean>;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
+  stravaId: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  userId: () => Promise<String>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
+  totalDistance: () => Promise<Float>;
+  totalDistanceUnit: () => Promise<String>;
+  duration: () => Promise<Float>;
+  durationUnit: () => Promise<String>;
+  totalEnergyBurned: () => Promise<Float>;
+  totalEnergyBurnedUnit: () => Promise<String>;
+  totalAscent: () => Promise<Float>;
+  totalAscentUnit: () => Promise<String>;
+  sourceName: () => Promise<String>;
 }
 
-export interface PostSubscription
-  extends Promise<AsyncIterator<Post>>,
+export interface CyclingWorkoutSubscription
+  extends Promise<AsyncIterator<CyclingWorkout>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-  title: () => Promise<AsyncIterator<String>>;
-  content: () => Promise<AsyncIterator<String>>;
+  stravaId: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  userId: () => Promise<AsyncIterator<String>>;
+  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  totalDistance: () => Promise<AsyncIterator<Float>>;
+  totalDistanceUnit: () => Promise<AsyncIterator<String>>;
+  duration: () => Promise<AsyncIterator<Float>>;
+  durationUnit: () => Promise<AsyncIterator<String>>;
+  totalEnergyBurned: () => Promise<AsyncIterator<Float>>;
+  totalEnergyBurnedUnit: () => Promise<AsyncIterator<String>>;
+  totalAscent: () => Promise<AsyncIterator<Float>>;
+  totalAscentUnit: () => Promise<AsyncIterator<String>>;
+  sourceName: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PostNullablePromise
-  extends Promise<Post | null>,
+export interface CyclingWorkoutNullablePromise
+  extends Promise<CyclingWorkout | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  published: () => Promise<Boolean>;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
+  stravaId: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  userId: () => Promise<String>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
+  totalDistance: () => Promise<Float>;
+  totalDistanceUnit: () => Promise<String>;
+  duration: () => Promise<Float>;
+  durationUnit: () => Promise<String>;
+  totalEnergyBurned: () => Promise<Float>;
+  totalEnergyBurnedUnit: () => Promise<String>;
+  totalAscent: () => Promise<Float>;
+  totalAscentUnit: () => Promise<String>;
+  sourceName: () => Promise<String>;
 }
 
-export interface PostConnection {
+export interface CyclingWorkoutConnection {
   pageInfo: PageInfo;
-  edges: PostEdge[];
+  edges: CyclingWorkoutEdge[];
 }
 
-export interface PostConnectionPromise
-  extends Promise<PostConnection>,
+export interface CyclingWorkoutConnectionPromise
+  extends Promise<CyclingWorkoutConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<PostEdge>>() => T;
-  aggregate: <T = AggregatePostPromise>() => T;
+  edges: <T = FragmentableArray<CyclingWorkoutEdge>>() => T;
+  aggregate: <T = AggregateCyclingWorkoutPromise>() => T;
 }
 
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnection>>,
+export interface CyclingWorkoutConnectionSubscription
+  extends Promise<AsyncIterator<CyclingWorkoutConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CyclingWorkoutEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCyclingWorkoutSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -829,43 +1087,46 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PostEdge {
-  node: Post;
+export interface CyclingWorkoutEdge {
+  node: CyclingWorkout;
   cursor: String;
 }
 
-export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
-  node: <T = PostPromise>() => T;
+export interface CyclingWorkoutEdgePromise
+  extends Promise<CyclingWorkoutEdge>,
+    Fragmentable {
+  node: <T = CyclingWorkoutPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface PostEdgeSubscription
-  extends Promise<AsyncIterator<PostEdge>>,
+export interface CyclingWorkoutEdgeSubscription
+  extends Promise<AsyncIterator<CyclingWorkoutEdge>>,
     Fragmentable {
-  node: <T = PostSubscription>() => T;
+  node: <T = CyclingWorkoutSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregatePost {
+export interface AggregateCyclingWorkout {
   count: Int;
 }
 
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
+export interface AggregateCyclingWorkoutPromise
+  extends Promise<AggregateCyclingWorkout>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
+export interface AggregateCyclingWorkoutSubscription
+  extends Promise<AsyncIterator<AggregateCyclingWorkout>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface RunningWorkout {
   id: ID_Output;
+  stravaId: String;
   createdAt: DateTimeOutput;
-  email: String;
+  userId: String;
   startDate: DateTimeOutput;
   endDate: DateTimeOutput;
   totalDistance: Float;
@@ -883,8 +1144,9 @@ export interface RunningWorkoutPromise
   extends Promise<RunningWorkout>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  stravaId: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
-  email: () => Promise<String>;
+  userId: () => Promise<String>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
   totalDistance: () => Promise<Float>;
@@ -902,8 +1164,9 @@ export interface RunningWorkoutSubscription
   extends Promise<AsyncIterator<RunningWorkout>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  stravaId: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  email: () => Promise<AsyncIterator<String>>;
+  userId: () => Promise<AsyncIterator<String>>;
   startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   totalDistance: () => Promise<AsyncIterator<Float>>;
@@ -921,8 +1184,9 @@ export interface RunningWorkoutNullablePromise
   extends Promise<RunningWorkout | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  stravaId: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
-  email: () => Promise<String>;
+  userId: () => Promise<String>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
   totalDistance: () => Promise<Float>;
@@ -1118,54 +1382,87 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface PostSubscriptionPayload {
+export interface CyclingWorkoutSubscriptionPayload {
   mutation: MutationType;
-  node: Post;
+  node: CyclingWorkout;
   updatedFields: String[];
-  previousValues: PostPreviousValues;
+  previousValues: CyclingWorkoutPreviousValues;
 }
 
-export interface PostSubscriptionPayloadPromise
-  extends Promise<PostSubscriptionPayload>,
+export interface CyclingWorkoutSubscriptionPayloadPromise
+  extends Promise<CyclingWorkoutSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = PostPromise>() => T;
+  node: <T = CyclingWorkoutPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = PostPreviousValuesPromise>() => T;
+  previousValues: <T = CyclingWorkoutPreviousValuesPromise>() => T;
 }
 
-export interface PostSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<PostSubscriptionPayload>>,
+export interface CyclingWorkoutSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CyclingWorkoutSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = PostSubscription>() => T;
+  node: <T = CyclingWorkoutSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = PostPreviousValuesSubscription>() => T;
+  previousValues: <T = CyclingWorkoutPreviousValuesSubscription>() => T;
 }
 
-export interface PostPreviousValues {
+export interface CyclingWorkoutPreviousValues {
   id: ID_Output;
-  published: Boolean;
-  title: String;
-  content: String;
+  stravaId: String;
+  createdAt: DateTimeOutput;
+  userId: String;
+  startDate: DateTimeOutput;
+  endDate: DateTimeOutput;
+  totalDistance: Float;
+  totalDistanceUnit: String;
+  duration: Float;
+  durationUnit: String;
+  totalEnergyBurned: Float;
+  totalEnergyBurnedUnit: String;
+  totalAscent: Float;
+  totalAscentUnit: String;
+  sourceName?: String;
 }
 
-export interface PostPreviousValuesPromise
-  extends Promise<PostPreviousValues>,
+export interface CyclingWorkoutPreviousValuesPromise
+  extends Promise<CyclingWorkoutPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  published: () => Promise<Boolean>;
-  title: () => Promise<String>;
-  content: () => Promise<String>;
+  stravaId: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  userId: () => Promise<String>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
+  totalDistance: () => Promise<Float>;
+  totalDistanceUnit: () => Promise<String>;
+  duration: () => Promise<Float>;
+  durationUnit: () => Promise<String>;
+  totalEnergyBurned: () => Promise<Float>;
+  totalEnergyBurnedUnit: () => Promise<String>;
+  totalAscent: () => Promise<Float>;
+  totalAscentUnit: () => Promise<String>;
+  sourceName: () => Promise<String>;
 }
 
-export interface PostPreviousValuesSubscription
-  extends Promise<AsyncIterator<PostPreviousValues>>,
+export interface CyclingWorkoutPreviousValuesSubscription
+  extends Promise<AsyncIterator<CyclingWorkoutPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-  title: () => Promise<AsyncIterator<String>>;
-  content: () => Promise<AsyncIterator<String>>;
+  stravaId: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  userId: () => Promise<AsyncIterator<String>>;
+  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  totalDistance: () => Promise<AsyncIterator<Float>>;
+  totalDistanceUnit: () => Promise<AsyncIterator<String>>;
+  duration: () => Promise<AsyncIterator<Float>>;
+  durationUnit: () => Promise<AsyncIterator<String>>;
+  totalEnergyBurned: () => Promise<AsyncIterator<Float>>;
+  totalEnergyBurnedUnit: () => Promise<AsyncIterator<String>>;
+  totalAscent: () => Promise<AsyncIterator<Float>>;
+  totalAscentUnit: () => Promise<AsyncIterator<String>>;
+  sourceName: () => Promise<AsyncIterator<String>>;
 }
 
 export interface RunningWorkoutSubscriptionPayload {
@@ -1195,8 +1492,9 @@ export interface RunningWorkoutSubscriptionPayloadSubscription
 
 export interface RunningWorkoutPreviousValues {
   id: ID_Output;
+  stravaId: String;
   createdAt: DateTimeOutput;
-  email: String;
+  userId: String;
   startDate: DateTimeOutput;
   endDate: DateTimeOutput;
   totalDistance: Float;
@@ -1214,8 +1512,9 @@ export interface RunningWorkoutPreviousValuesPromise
   extends Promise<RunningWorkoutPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  stravaId: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
-  email: () => Promise<String>;
+  userId: () => Promise<String>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
   totalDistance: () => Promise<Float>;
@@ -1233,8 +1532,9 @@ export interface RunningWorkoutPreviousValuesSubscription
   extends Promise<AsyncIterator<RunningWorkoutPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  stravaId: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  email: () => Promise<AsyncIterator<String>>;
+  userId: () => Promise<AsyncIterator<String>>;
   startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   totalDistance: () => Promise<AsyncIterator<Float>>;
@@ -1323,19 +1623,9 @@ export type ID_Input = string | number;
 export type ID_Output = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
-
-/*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-*/
-export type Int = number;
 
 /*
 DateTime scalar input type, allowing Date
@@ -1352,6 +1642,16 @@ The `Float` scalar type represents signed double-precision fractional values as 
 */
 export type Float = number;
 
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+*/
+export type Int = number;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
 export type Long = string;
 
 /**
@@ -1360,11 +1660,11 @@ export type Long = string;
 
 export const models: Model[] = [
   {
-    name: "Post",
+    name: "RunningWorkout",
     embedded: false
   },
   {
-    name: "RunningWorkout",
+    name: "CyclingWorkout",
     embedded: false
   },
   {

@@ -5,11 +5,11 @@ var typeDefs = require("./prisma-schema").typeDefs;
 
 var models = [
   {
-    name: "Post",
+    name: "RunningWorkout",
     embedded: false
   },
   {
-    name: "RunningWorkout",
+    name: "CyclingWorkout",
     embedded: false
   },
   {
