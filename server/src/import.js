@@ -1,50 +1,114 @@
 const fetch = require('node-fetch');
 const moment = require('moment');
-const qs = require('qs');
+const { maxBy } = require('lodash');
 const { prisma } = require('./generated/prisma-client');
-const { checkAccessToken } = require('./strava-oauth');
 require('dotenv').config();
 
-module.exports = async (req, res, next) => {
-  try {
-    const { accessToken } = req.user;
-    // TODO: check workout owner
-    const [latest] = await prisma.runningWorkouts({
-      orderBy: 'startDate_ASC',
-      last: 1
-    });
-
-    const startDate = moment.utc(latest.startDate).valueOf() / 1000;
+async function *fetchActivities({ accessToken, userId }) {
+  const [latestCycling] = await prisma.cyclingWorkouts({
+    orderBy: 'startDate_ASC',
+    last: 1,
+    where: { userId }
+  });
+  const [latestRunning] = await prisma.runningWorkouts({
+    orderBy: 'startDate_ASC',
+    last: 1,
+    where: { userId }
+  });
+  const latest = maxBy([latestCycling, latestRunning], 'startDate');
+  let startDate = moment.utc(latest ? latest.startDate : '2017-01-01')
+    .valueOf() / 1000;
+  let hasData = true;
+  while (hasData) {
+    console.log(`Fetching data after ${moment(startDate * 1000).format()}`);
     const response = await fetch(`https://www.strava.com/api/v3/athlete/activities?after=${startDate}`, {
       headers: { 'Authorization': `Bearer ${accessToken}` }
     });
     if (response.status === 401) {
       throw new Error('STRAVA_UNAUTHORIZED');
     }
+    if (response.status === 429) {
+      throw new Error('STRAVA_TOO_MANY_REQUEST');
+    }
     const activityList = await response.json();
+    if (!activityList.length) {
+      hasData = false;
+    } else {
+      startDate = moment.utc(maxBy(activityList, 'start_date').start_date).valueOf() / 1000;
+      yield activityList;
+    }
+  }
+}
 
-    const ids = activityList.reverse().map(({ id }) => id);
-    await Promise.all(activityList.reverse().map(async ({ id }) => {
-      const response = await fetch(`https://www.strava.com/api/v3/activities/${id}`, {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-      });
-      const activity = await response.json();
-      await prisma.createRunningWorkout({
-        email: 'cofetty@gmail.com',
-        startDate: moment.utc(activity.start_date).format(),
-        endDate: moment.utc(activity.start_date).add(activity.elapsed_time).format(),
-        totalDistance: activity.distance / 1000,
-        totalDistanceUnit: 'km',
-        duration: activity.elapsed_time / 60,
-        totalAscent: activity.total_elevation_gain / 1000,
-        totalAscentUnit: 'km',
-        totalEnergyBurned: activity.calories,
-        totalEnergyBurnedUnit: 'kcal',
-        sourceName: 'strava'
-      });
-    }));
+module.exports = async (req, res, next) => {
+  try {
+    const { accessToken, id: userId } = req.user;
+    let counter = 0;
+    for await (let activities of fetchActivities({ accessToken, userId})) {
+      await Promise.all(activities.map(async ({ id, type, start_date }) => {
+        const startDate = moment.utc(start_date).format();
 
-    res.json({ inserted: activityList.length });
+        if (type === 'Run') {
+          const existingEntry = await prisma.runningWorkouts({
+            where: { startDate }
+          });
+          if (!existingEntry.length) {
+            const response = await fetch(`https://www.strava.com/api/v3/activities/${id}`, {
+              headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            const activity = await response.json();
+
+            await prisma.createRunningWorkout({
+              userId,
+              stravaId: `${activity.id}`,
+              startDate: moment.utc(activity.start_date).format(),
+              endDate: moment.utc(activity.start_date).add(activity.elapsed_time).format(),
+              totalDistance: activity.distance / 1000,
+              totalDistanceUnit: 'km',
+              duration: activity.elapsed_time / 60,
+              totalAscent: activity.total_elevation_gain / 1000,
+              totalAscentUnit: 'km',
+              totalEnergyBurned: activity.calories,
+              totalEnergyBurnedUnit: 'kcal',
+              sourceName: 'strava'
+            });
+            counter++;
+            console.log(`Processed run stravaId=${activity.id} from ${startDate}`);
+          }
+        }
+
+        if (type === 'Ride') {
+          const existingEntry = await prisma.cyclingWorkouts({
+            where: { startDate }
+          });
+          if (!existingEntry.length) {
+            const response = await fetch(`https://www.strava.com/api/v3/activities/${id}`, {
+              headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            const activity = await response.json();
+
+            await prisma.createCyclingWorkout({
+              userId,
+              stravaId: `${activity.id}`,
+              startDate,
+              endDate: moment.utc(activity.start_date).add(activity.elapsed_time).format(),
+              totalDistance: activity.distance / 1000,
+              totalDistanceUnit: 'km',
+              duration: activity.elapsed_time / 60,
+              totalAscent: activity.total_elevation_gain / 1000,
+              totalAscentUnit: 'km',
+              totalEnergyBurned: activity.calories,
+              totalEnergyBurnedUnit: 'kcal',
+              sourceName: 'strava'
+            });
+            counter++;
+            console.log(`Processed ride stravaId=${activity.id} from ${startDate}`);
+          }
+        }
+      }));
+    }
+
+    res.json({ inserted: counter });
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
