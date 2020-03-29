@@ -7,11 +7,13 @@ const { prisma } = require('./generated/prisma-client');
 const BigInt = require('apollo-type-bigint');
 const mergeResolvers = require('graphql-merge-resolvers');
 const GraphQLDateTime = require('graphql-type-datetime');
+const cyclingResolvers = require('./resolvers/cycling');
 const runningResolvers = require('./resolvers/running');
 const importRunningFromStrava = require('./import');
 const { stravaOAuth, checkAccessToken } = require('./strava-oauth');
 
 const resolvers = mergeResolvers.merge([
+  cyclingResolvers,
   runningResolvers,
   {
     BigInt,

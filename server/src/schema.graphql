@@ -3,10 +3,14 @@ scalar DateTime
 scalar BigInt
 
 type Query {
-  runningWorkout(id: ID!): RunningWorkout
-  runningWorkouts: [RunningWorkout!]!
-  runningTotalsByMonth: [RunningTotals!]!
-  runningTotalsByDay: [RunningTotals!]!
+  runningWorkout(id: ID!): Workout
+  runningWorkouts: [Workout!]!
+  runningTotalsByMonth: [WorkoutTotals!]!
+  runningTotalsByDay: [WorkoutTotals!]!
+  cyclingWorkout(id: ID!): Workout
+  cyclingWorkouts: [Workout!]!
+  cyclingTotalsByMonth: [WorkoutTotals!]!
+  cyclingTotalsByDay: [WorkoutTotals!]!
 }
 
 type Mutation {
@@ -23,17 +27,24 @@ type Mutation {
     totalAscent: Float,
     totalAscentUnit: String,
     sourceName: String
-  ): RunningWorkout
+  ): Workout
+  createCyclingWorkout(
+    email: String!,
+    startDate: DateTime!,
+    endDate: DateTime!,
+    totalDistance: Float!,
+    totalDistanceUnit: String!,
+    duration: Float!,
+    durationUnit: String!,
+    totalEnergyBurned: Float!,
+    totalEnergyBurnedUnit: String!,
+    totalAscent: Float,
+    totalAscentUnit: String,
+    sourceName: String
+  ): Workout
 }
 
-type Post {
-  id: ID!
-  published: Boolean!
-  title: String!
-  content: String!
-}
-
-type RunningWorkout {
+type Workout {
   id: ID!
   createdAt: DateTime!
   email: String!
@@ -50,24 +61,24 @@ type RunningWorkout {
   sourceName: String
 }
 
-type RunningTotals {
+type WorkoutTotals {
   year: Int!
   totalDistance: Float!
   totalDistanceUnit: String!
-  months: [RunningTotalsByMonth!]
-  days: [RunningTotalsByDay!]
+  months: [WorkoutTotalsByMonth!]
+  days: [WorkoutTotalsByDay!]
 }
 
-type RunningTotalsByMonth {
+type WorkoutTotalsByMonth {
   month: Int!
   totalDistance: Float!
   totalDistanceUnit: String!
-  runningWorkouts: [RunningWorkout!]!
+  runningWorkouts: [Workout!]!
 }
 
-type RunningTotalsByDay {
+type WorkoutTotalsByDay {
   day: Int!
   totalDistance: Float!
   totalDistanceUnit: String!
-  runningWorkouts: [RunningWorkout!]!
+  runningWorkouts: [Workout!]!
 }
