@@ -4,12 +4,19 @@ import { useQuery } from '@apollo/react-hooks';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
 
-const RunningDailyPage = () => {
-  const { loading, data } = useQuery(RUNNING_BY_DAY_QUERY);
+const useDataQuery = (type) => {
+  const query = type === 'cycling' ? CYCLING_BY_DAY_QUERY : RUNNING_BY_DAY_QUERY;
+  const dataKey = type === 'cycling' ? 'cyclingTotalsByDay' : 'runningTotalsByDay';
+  const { loading, data } = useQuery(query);
+  return { loading, data: loading ? null : data[dataKey] };
+}
+
+const WorkoutDailyPage = ({ type }) => {
+  const { loading, data } = useDataQuery(type);
   if (loading) {
     return (<div>loading</div>);
   }
-  const series = data.runningTotalsByDay.map(({ year, days }) => ({
+  const series = data.map(({ year, days }) => ({
     name: year,
     data: days.map(({ day, totalDistance }) => [day, totalDistance])
   }));
@@ -57,11 +64,23 @@ const RunningDailyPage = () => {
   )
 }
 
-export default RunningDailyPage;
+export default WorkoutDailyPage;
 
 const RUNNING_BY_DAY_QUERY = gql`
   query RunningByDayQuery {
     runningTotalsByDay {
+      year,
+      totalDistance,
+      days {
+        day,
+        totalDistance
+      }
+    }
+  }
+`;
+const CYCLING_BY_DAY_QUERY = gql`
+  query CyclingByDayQuery {
+    cyclingTotalsByDay {
       year,
       totalDistance,
       days {

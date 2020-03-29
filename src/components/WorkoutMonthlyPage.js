@@ -5,12 +5,19 @@ import Chart from 'react-apexcharts'
 import moment from 'moment';
 import { times } from 'lodash';
 
-const RunningMonthlyPage = () => {
-  const { loading, data } = useQuery(RUNNING_BY_MONTH_QUERY);
+const useDataQuery = (type) => {
+  const query = type === 'cycling' ? CYCLING_BY_MONTH_QUERY : RUNNING_BY_MONTH_QUERY;
+  const dataKey = type === 'cycling' ? 'cyclingTotalsByMonth' : 'runningTotalsByMonth';
+  const { loading, data } = useQuery(query);
+  return { loading, data: loading ? null : data[dataKey] };
+}
+
+const WorkoutMonthlyPage = ({ type }) => {
+  const { loading, data } = useDataQuery(type);
   if (loading) {
     return (<div>loading</div>);
   }
-  const series = data.runningTotalsByMonth.map(({ year, months }) => ({
+  const series = data.map(({ year, months }) => ({
     name: year,
     data: months.map(({ totalDistance }) => totalDistance)
   }));
@@ -59,11 +66,23 @@ const RunningMonthlyPage = () => {
   )
 }
 
-export default RunningMonthlyPage;
+export default WorkoutMonthlyPage;
 
 const RUNNING_BY_MONTH_QUERY = gql`
   query RunningByMonthQuery {
     runningTotalsByMonth {
+      year,
+      totalDistance,
+      months {
+        month,
+        totalDistance
+      }
+    }
+  }
+`;
+const CYCLING_BY_MONTH_QUERY = gql`
+  query CyclingByMonthQuery {
+    cyclingTotalsByMonth {
       year,
       totalDistance,
       months {

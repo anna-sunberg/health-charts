@@ -10,8 +10,8 @@ import {
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 
-import RunningDailyPage from './components/RunningDailyPage';
-import RunningMonthlyPage from './components/RunningMonthlyPage';
+import WorkoutDailyPage from './components/WorkoutDailyPage';
+import WorkoutMonthlyPage from './components/WorkoutMonthlyPage';
 
 import 'tachyons';
 import './index.css';
@@ -49,12 +49,32 @@ ReactDOM.render(
           >
             Running cumulative
           </NavLink>
+          <NavLink
+            className="link dim f6 f5-ns dib mr3 black"
+            activeClassName="gray"
+            exact={true}
+            to="/cycling"
+            title="Cycling"
+          >
+            Cycling
+          </NavLink>
+          <NavLink
+            className="link dim f6 f5-ns dib mr3 black"
+            activeClassName="gray"
+            exact={true}
+            to="/cycling_day"
+            title="Cycling cumulative"
+          >
+            Cycling cumulative
+          </NavLink>
         </nav>
         <div className="fl w-100 pl4 pr4">
           <Switch>
-            <Route exact path="/" component={RunningDailyPage} />
-            <Route path="/running" component={RunningMonthlyPage} />
-            <Route path="/running_day" component={RunningDailyPage} />
+            <Route exact path="/" component={() => <WorkoutDailyPage type="running" />} />
+            <Route path="/running" component={() => <WorkoutMonthlyPage type="running" />} />
+            <Route path="/cycling" component={() => <WorkoutMonthlyPage type="cycling" />} />
+            <Route path="/running_day" component={() => <WorkoutDailyPage type="running" />} />
+            <Route path="/cycling_day" component={() => <WorkoutDailyPage type="cycling" />} />
           </Switch>
         </div>
       </Fragment>
