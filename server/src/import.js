@@ -2,31 +2,11 @@ const fetch = require('node-fetch');
 const moment = require('moment');
 const qs = require('qs');
 const { prisma } = require('./generated/prisma-client');
+const { checkAccessToken } = require('./strava-oauth');
 require('dotenv').config();
 
 module.exports = async (req, res, next) => {
   try {
-    if (moment(req.user.accessTokenExpiresAt * 1000) < moment.utc()) {
-      const uri = `https://www.strava.com/api/v3/oauth/token?` +
-        qs.stringify({
-          'client_id': process.env.OAUTH_CLIENT_ID,
-          'client_secret': process.env.OAUTH_CLIENT_SECRET,
-          'grant_type': 'refresh_token',
-          'refresh_token': req.user.refreshToken
-        });
-
-      const response = await fetch(uri, { method: 'post' });
-      const { access_token: accessToken, expires_at: accessTokenExpiresAt } = await response.json();
-      const updatedUser = await prisma.updateUser({
-        data: {
-          accessToken, accessTokenExpiresAt
-        },
-        where: {
-          id: req.user.id
-        }
-      });
-      req.user = updatedUser;
-    }
     const { accessToken } = req.user;
     // TODO: check workout owner
     const [latest] = await prisma.runningWorkouts({

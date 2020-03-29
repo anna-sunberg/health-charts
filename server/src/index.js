@@ -2,14 +2,14 @@ const { GraphQLServer } = require('graphql-yoga');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const { prisma } = require('./generated/prisma-client');
 const BigInt = require('apollo-type-bigint');
 const mergeResolvers = require('graphql-merge-resolvers');
 const GraphQLDateTime = require('graphql-type-datetime');
 const runningResolvers = require('./resolvers/running');
 const importRunningFromStrava = require('./import');
-const stravaOAuth = require('./strava-oauth');
+const { stravaOAuth, checkAccessToken } = require('./strava-oauth');
 
 const resolvers = mergeResolvers.merge([
   runningResolvers,
@@ -40,7 +40,8 @@ server.express.all('*', async (req, res, next) => {
     if (!user) {
       return res.redirect('/auth');
     }
-    req.user = user;
+    const updatedUser = await checkAccessToken(user);
+    req.user = updatedUser;
     next();
   }
 });
