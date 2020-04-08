@@ -49,7 +49,7 @@ router.get('/callback', async (req, res, next) => {
       accessToken,
       accessTokenExpiresAt,
       refreshToken,
-      stravaId,
+      stravaId: `${stravaId}`,
       stravaUsername,
       sex: sex === 'F' ? 'female' : 'male'
     });
