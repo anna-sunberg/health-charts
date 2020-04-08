@@ -55,7 +55,7 @@ router.get('/callback', async (req, res, next) => {
     });
   }
 
-  res.cookie('jwt', jwt.sign(user.id, process.env.JWT_SECRET));
+  res.cookie('jwt', jwt.sign(user.id, process.env.JWT_SECRET), { expiresIn: '365 days' });
   res.redirect('/');
   } catch (err) {
     console.error(err);
