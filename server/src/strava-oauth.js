@@ -50,12 +50,16 @@ router.get('/callback', async (req, res, next) => {
       accessTokenExpiresAt,
       refreshToken,
       stravaId: `${stravaId}`,
-      stravaUsername,
+      stravaUsername: `${stravaUsername}`,
       sex: sex === 'F' ? 'female' : 'male'
     });
   }
 
-  res.cookie('jwt', jwt.sign(user.id, process.env.JWT_SECRET), { expiresIn: '365 days' });
+  res.cookie(
+    'jwt',
+    jwt.sign(user.id, process.env.JWT_SECRET),
+    { expires: moment().add(1, 'y').toDate() }
+  );
   res.redirect('/');
   } catch (err) {
     console.error(err);

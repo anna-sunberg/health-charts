@@ -37,13 +37,17 @@ server.express.all('*', async (req, res, next) => {
     if (!req.cookies.jwt) {
       return res.redirect('/auth');
     }
-    const userId = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
-    const user = await prisma.user({ id: userId });
-    if (!user) {
-      return res.redirect('/auth');
+    try {
+      const userId = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+      const user = await prisma.user({ id: userId });
+      if (!user) {
+        return res.redirect('/auth');
+      }
+      const updatedUser = await checkAccessToken(user);
+      req.user = updatedUser;
+    } catch (err) {
+      console.log(err);
     }
-    const updatedUser = await checkAccessToken(user);
-    req.user = updatedUser;
     next();
   }
 });
