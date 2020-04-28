@@ -85,6 +85,23 @@ module.exports = {
           totalDistanceUnit: DISTANCE_UNIT
         }
       });
+    },
+    runningStats: async (parent, args, context) => {
+      const now = moment.utc();
+      const start = moment(now).add(-1, 'y').startOf('year');
+      const allWorkouts = await context.prisma.runningWorkouts({
+        where: {
+          startDate_gt: start.format('YYYY-MM-DD')
+        }
+      });
+      const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
+      const lastWeek = allWorkouts.filter(
+          ({ startDate }) => moment(startDate) >= moment.utc(now).startOf('week').add(-6, 'd') && moment.utc(startDate) < moment(now).startOf('week').add(1, 'd')
+        )
+        .reduce(sumDistance, 0);
+      const thisWeek = allWorkouts.filter(({ startDate }) => moment.utc(startDate) >= moment(now).startOf('week').add(1, 'd'))
+        .reduce(sumDistance, 0);
+      return { lastWeek, thisWeek };
     }
   },
   Mutation: {

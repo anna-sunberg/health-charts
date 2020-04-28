@@ -7,6 +7,7 @@ type Query {
   runningWorkouts: [Workout!]!
   runningTotalsByMonth: [WorkoutTotals!]!
   runningTotalsByDay: [WorkoutTotals!]!
+  runningStats: Stats
   cyclingWorkout(id: ID!): Workout
   cyclingWorkouts: [Workout!]!
   cyclingTotalsByMonth: [WorkoutTotals!]!
@@ -81,4 +82,9 @@ type WorkoutTotalsByDay {
   totalDistance: Float!
   totalDistanceUnit: String!
   runningWorkouts: [Workout!]!
+}
+
+type Stats {
+  lastWeek: Float!
+  thisWeek: Float!
 }

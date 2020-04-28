@@ -10,6 +10,7 @@ import {
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 
+import HomePage from './components/HomePage';
 import WorkoutDailyPage from './components/WorkoutDailyPage';
 import WorkoutMonthlyPage from './components/WorkoutMonthlyPage';
 
@@ -70,7 +71,7 @@ ReactDOM.render(
         </nav>
         <div className="fl w-100 pl4 pr4">
           <Switch>
-            <Route exact path="/" component={() => <WorkoutDailyPage type="running" />} />
+            <Route exact path="/" component={() => <HomePage />} />
             <Route path="/running" component={() => <WorkoutMonthlyPage type="running" />} />
             <Route path="/cycling" component={() => <WorkoutMonthlyPage type="cycling" />} />
             <Route path="/running_day" component={() => <WorkoutDailyPage type="running" />} />
