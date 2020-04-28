@@ -1,5 +1,6 @@
 import React from 'react';
 import { gql } from 'apollo-boost';
+import { get } from 'lodash';
 import { useQuery } from '@apollo/react-hooks';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
@@ -7,14 +8,18 @@ import moment from 'moment';
 const useDataQuery = (type) => {
   const query = type === 'cycling' ? CYCLING_BY_DAY_QUERY : RUNNING_BY_DAY_QUERY;
   const dataKey = type === 'cycling' ? 'cyclingTotalsByDay' : 'runningTotalsByDay';
-  const { loading, data } = useQuery(query);
-  return { loading, data: loading ? null : data[dataKey] };
+  const { loading, data, error } = useQuery(query);
+  return { error, loading, data: get(data, dataKey) };
 }
 
 const WorkoutDailyPage = ({ type }) => {
-  const { loading, data } = useDataQuery(type);
+  const { loading, data, error } = useDataQuery(type);
   if (loading) {
     return (<div>loading</div>);
+  }
+  if (error) {
+    console.error(error);
+    return (<div>error</div>);
   }
   const series = data.map(({ year, days }) => ({
     name: year,

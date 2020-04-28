@@ -3,13 +3,13 @@ import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import Chart from 'react-apexcharts'
 import moment from 'moment';
-import { times } from 'lodash';
+import { get, times } from 'lodash';
 
 const useDataQuery = (type) => {
   const query = type === 'cycling' ? CYCLING_BY_MONTH_QUERY : RUNNING_BY_MONTH_QUERY;
   const dataKey = type === 'cycling' ? 'cyclingTotalsByMonth' : 'runningTotalsByMonth';
-  const { loading, data } = useQuery(query);
-  return { loading, data: loading ? null : data[dataKey] };
+  const { loading, data, error } = useQuery(query);
+  return { error, loading, data: get(data, dataKey) };
 }
 
 const WorkoutMonthlyPage = ({ type }) => {
