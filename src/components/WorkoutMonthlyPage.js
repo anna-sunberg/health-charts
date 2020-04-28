@@ -62,7 +62,9 @@ const WorkoutMonthlyPage = ({ type }) => {
   }
 
   return (
-    <Chart type="bar" series={series} options={options} />
+    <div className="chart-container">
+      <Chart type="bar" series={series} options={options} />
+    </div>
   )
 }
 

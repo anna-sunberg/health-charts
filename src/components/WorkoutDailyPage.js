@@ -60,7 +60,9 @@ const WorkoutDailyPage = ({ type }) => {
   }
 
   return (
-    <Chart type="area" series={series} options={options} />
+    <div className="chart-container">
+      <Chart type="area" series={series} options={options} />
+    </div>
   )
 }
 
