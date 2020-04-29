@@ -85,6 +85,12 @@ type WorkoutTotalsByDay {
 }
 
 type Stats {
-  lastWeek: Float!
-  thisWeek: Float!
+  weeklyStats: PeriodStats!
+  recentWorkout: Workout
+  recentWorkouts: [Workout!]!
+}
+
+type PeriodStats {
+  lastPeriod: Float!
+  thisPeriod: Float!
 }

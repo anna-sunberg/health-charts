@@ -86,29 +86,43 @@ module.exports = {
         }
       });
     },
-    runningStats: async (parent, args, context) => {
-      const now = moment.utc();
-      const start = moment(now).add(-1, 'y').startOf('year');
-      const allWorkouts = await context.prisma.runningWorkouts({
-        where: {
-          startDate_gt: start.format('YYYY-MM-DD')
-        }
-      });
-      const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
-      const lastWeek = allWorkouts.filter(
-          ({ startDate }) => moment(startDate) >= moment.utc(now).startOf('week').add(-6, 'd') && moment.utc(startDate) < moment(now).startOf('week').add(1, 'd')
-        )
-        .reduce(sumDistance, 0);
-      const thisWeek = allWorkouts.filter(({ startDate }) => moment.utc(startDate) >= moment(now).startOf('week').add(1, 'd'))
-        .reduce(sumDistance, 0);
-      return { lastWeek, thisWeek };
-    }
+    runningStats: () => ({})
   },
   Mutation: {
     createRunningWorkout(parent, workout, context) {
       return context.prisma.createRunningWorkout({
         ...workout
       });
+    }
+  },
+  Stats: {
+    weeklyStats: async (parent, args, context) => {
+      const now = moment.utc();
+      const start = moment.utc(now).startOf('week').add(-6, 'd');
+      const startOfWeek = moment(now).startOf('week').add(1, 'd');
+      const allWorkouts = await context.prisma.runningWorkouts({
+        where: {
+          startDate_gt: start.format('YYYY-MM-DD')
+        }
+      });
+      const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
+      const lastPeriod = allWorkouts.filter(
+          ({ startDate }) => moment.utc(startDate) < startOfWeek
+        )
+        .reduce(sumDistance, 0);
+      const thisPeriod = allWorkouts.filter(({ startDate }) => moment.utc(startDate) >= startOfWeek)
+        .reduce(sumDistance, 0);
+      return { lastPeriod, thisPeriod };
+    },
+    recentWorkouts: (parent, workout, context) => (
+      context.prisma.runningWorkouts({ orderBy: 'startDate_DESC', first: 10 })
+    ),
+    recentWorkout: async (parent, workout, context) => {
+      const workouts = await context.prisma.runningWorkouts({ orderBy: 'startDate_DESC', first: 1 });
+      if (workouts.length) {
+        return workouts[0];
+      }
+      return null;
     }
   }
 };
