@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import Chart from 'react-apexcharts'
 import moment from 'moment';
 import { get, times } from 'lodash';
+import Loader from './Loader';
 
 const useDataQuery = (type) => {
   const query = type === 'cycling' ? CYCLING_BY_MONTH_QUERY : RUNNING_BY_MONTH_QUERY;
@@ -13,10 +14,11 @@ const useDataQuery = (type) => {
 }
 
 const WorkoutMonthlyPage = ({ type }) => {
-  const { loading, data } = useDataQuery(type);
-  if (loading) {
-    return (<div>loading</div>);
+  const { loading, data, error } = useDataQuery(type);
+  if (loading || error) {
+    return <Loader error={error} />;
   }
+
   const series = data.map(({ year, months }) => ({
     name: year,
     data: months.map(({ totalDistance }) => totalDistance)

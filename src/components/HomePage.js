@@ -2,15 +2,12 @@ import React from 'react';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
+import Loader from './Loader';
 
 const HomePage = () => {
   const { loading, data, error } = useQuery(RUNNING_STATS_QUERY);
-  if (loading) {
-    return (<div>loading</div>);
-  }
-  if (error) {
-    console.error(error);
-    return (<div>error</div>);
+  if (loading || error) {
+    return <Loader error={error} />;
   }
 
   const { weeklyStats, recentWorkout } = data.runningStats;
