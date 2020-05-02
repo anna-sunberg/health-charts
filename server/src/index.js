@@ -25,8 +25,8 @@ const server = new GraphQLServer({
   typeDefs: path.join(__dirname, 'schema.graphql'),
   resolvers,
   context: {
-    prisma,
-  },
+    prisma
+  }
 });
 
 server.express.use(cookieParser());
@@ -63,8 +63,11 @@ server.express.get('/*', (req, res, next) => {
 });
 
 const port = process.env.PORT || 4000;
-server.start({
-  port,
-  endpoint: '/api',
-  playground: '/api'
-}, () => console.log(`Server is running on http://localhost:${port}`));
+server.start(
+  {
+    port,
+    endpoint: '/api',
+    playground: '/api'
+  },
+  () => console.log(`Server is running on http://localhost:${port}`)
+);

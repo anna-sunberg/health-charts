@@ -7,12 +7,8 @@ const getTotalDistance = (total, { totalDistance }) => total + totalDistance;
 
 module.exports = {
   Query: {
-    cyclingWorkouts: (parent, args, context) => (
-      context.prisma.cyclingWorkouts()
-    ),
-    cyclingWorkout: (parent, { id }, context) => (
-      context.prisma.cyclingWorkout({ id })
-    ),
+    cyclingWorkouts: (parent, args, context) => context.prisma.cyclingWorkouts(),
+    cyclingWorkout: (parent, { id }, context) => context.prisma.cyclingWorkout({ id }),
     cyclingTotalsByDay: async (parent, args, context) => {
       const now = moment.utc().startOf('year');
       const rawWorkouts = await context.prisma.cyclingWorkouts({
@@ -20,7 +16,7 @@ module.exports = {
           startDate_gt: `${MIN_YEAR}-01-01`
         }
       });
-      const workouts = rawWorkouts.map((workout) => {
+      const workouts = rawWorkouts.map(workout => {
         const startDate = moment.utc(workout.startDate);
         const dayOfYear = startDate.dayOfYear();
         return {
@@ -29,15 +25,15 @@ module.exports = {
           day: !startDate.isLeapYear() && dayOfYear > 59 ? dayOfYear + 1 : dayOfYear
         };
       });
-      return times(now.get('year') - MIN_YEAR + 1, (yearOffset) => {
+      return times(now.get('year') - MIN_YEAR + 1, yearOffset => {
         const currentYear = MIN_YEAR + yearOffset;
         const allDays = times(366);
         const yearWorkouts = workouts.filter(({ year }) => year === currentYear);
         const yearlyTotalDistance = yearWorkouts.reduce(getTotalDistance, 0);
         let totalDistance = 0;
-        const days = allDays.map((dayIndex) => {
+        const days = allDays.map(dayIndex => {
           const monthWorkouts = yearWorkouts.filter(({ day }) => day === dayIndex);
-          totalDistance += monthWorkouts.reduce(getTotalDistance, 0), 2;
+          (totalDistance += monthWorkouts.reduce(getTotalDistance, 0)), 2;
           return {
             day: dayIndex,
             totalDistance: round(totalDistance),
@@ -50,7 +46,7 @@ module.exports = {
           year: currentYear,
           totalDistance: round(yearlyTotalDistance, 2),
           totalDistanceUnit: DISTANCE_UNIT
-        }
+        };
       });
     },
     cyclingTotalsByMonth: async (parent, args, context) => {
@@ -61,7 +57,7 @@ module.exports = {
           startDate_gt: `${MIN_YEAR}-01-01`
         }
       });
-      const workouts = rawWorkouts.map((workout) => {
+      const workouts = rawWorkouts.map(workout => {
         const startDate = moment.utc(workout.startDate);
         return {
           ...workout,
@@ -69,21 +65,26 @@ module.exports = {
           month: startDate.get('month')
         };
       });
-      return times(now.get('year') - MIN_YEAR + 1, (yearOffset) => {
+      return times(now.get('year') - MIN_YEAR + 1, yearOffset => {
         const currentYear = MIN_YEAR + yearOffset;
         const yearWorkouts = workouts.filter(({ year }) => year === currentYear);
         const yearlyTotalDistance = yearWorkouts.reduce(getTotalDistance, 0);
-        const months = allMonths.map((monthIndex) => {
+        const months = allMonths.map(monthIndex => {
           const monthWorkouts = yearWorkouts.filter(({ month }) => month === monthIndex);
           const totalDistance = round(monthWorkouts.reduce(getTotalDistance, 0), 2);
-          return { month: monthIndex, totalDistance, totalDistanceUnit: DISTANCE_UNIT, cyclingWorkouts: monthWorkouts };
+          return {
+            month: monthIndex,
+            totalDistance,
+            totalDistanceUnit: DISTANCE_UNIT,
+            cyclingWorkouts: monthWorkouts
+          };
         });
         return {
           months,
           year: currentYear,
           totalDistance: round(yearlyTotalDistance, 2),
           totalDistanceUnit: DISTANCE_UNIT
-        }
+        };
       });
     }
   },
