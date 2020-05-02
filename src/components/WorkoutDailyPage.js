@@ -6,12 +6,12 @@ import Chart from 'react-apexcharts';
 import moment from 'moment';
 import Loader from './Loader';
 
-const useDataQuery = (type) => {
+const useDataQuery = type => {
   const query = type === 'cycling' ? CYCLING_BY_DAY_QUERY : RUNNING_BY_DAY_QUERY;
   const dataKey = type === 'cycling' ? 'cyclingTotalsByDay' : 'runningTotalsByDay';
   const { loading, data, error } = useQuery(query);
   return { error, loading, data: get(data, dataKey) };
-}
+};
 
 const WorkoutDailyPage = ({ type }) => {
   const { loading, data, error } = useDataQuery(type);
@@ -30,18 +30,30 @@ const WorkoutDailyPage = ({ type }) => {
       min: 0,
       max: 365,
       labels: {
-        formatter: (d) => d !== undefined && moment.utc().startOf('year').add(d + 1, 'day').format('MMM')
+        formatter: d =>
+          d !== undefined &&
+          moment
+            .utc()
+            .startOf('year')
+            .add(d + 1, 'day')
+            .format('MMM')
       }
     },
     yaxis: {
       labels: {
-        formatter: (d) => Math.round(d)
+        formatter: d => Math.round(d)
       }
     },
     tooltip: {
       shared: true,
       x: {
-        formatter: (d) => d !== undefined && moment.utc().startOf('year').add(d, 'day').format('DD MMM')
+        formatter: d =>
+          d !== undefined &&
+          moment
+            .utc()
+            .startOf('year')
+            .add(d, 'day')
+            .format('DD MMM')
       }
     },
     theme: {
@@ -60,24 +72,24 @@ const WorkoutDailyPage = ({ type }) => {
     dataLabels: {
       enabled: false
     }
-  }
+  };
 
   return (
     <div className="chart-container">
       <Chart type="area" series={series} options={options} />
     </div>
-  )
-}
+  );
+};
 
 export default WorkoutDailyPage;
 
 const RUNNING_BY_DAY_QUERY = gql`
   query RunningByDayQuery {
     runningTotalsByDay {
-      year,
-      totalDistance,
+      year
+      totalDistance
       days {
-        day,
+        day
         totalDistance
       }
     }
@@ -86,10 +98,10 @@ const RUNNING_BY_DAY_QUERY = gql`
 const CYCLING_BY_DAY_QUERY = gql`
   query CyclingByDayQuery {
     cyclingTotalsByDay {
-      year,
-      totalDistance,
+      year
+      totalDistance
       days {
-        day,
+        day
         totalDistance
       }
     }

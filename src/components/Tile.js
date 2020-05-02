@@ -11,7 +11,11 @@ const Tile = ({ title, primary, secondary, unit, time }) => {
             {unit && ` ${unit}`}
           </div>
         </div>
-        {secondary && !time && <div className="tile__secondary">{`${primary > secondary ? '↑' : '↓'} ${secondary} ${unit}`}</div>}
+        {secondary && !time && (
+          <div className="tile__secondary">{`${
+            primary > secondary ? '↑' : '↓'
+          } ${secondary} ${unit}`}</div>
+        )}
         {secondary && time && <div className="tile__secondary">{secondary}</div>}
       </div>
     </div>

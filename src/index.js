@@ -1,12 +1,6 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-import {
-  NavLink,
-  Link,
-  BrowserRouter as Router,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { NavLink, Link, BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 
@@ -25,11 +19,7 @@ ReactDOM.render(
     <Router>
       <Fragment>
         <nav className="pa3 pa4-ns">
-          <Link
-            className="link dim black b f6 f5-ns dib mr3"
-            to="/"
-            title="Home"
-          >
+          <Link className="link dim black b f6 f5-ns dib mr3" to="/" title="Home">
             Home
           </Link>
           <NavLink
@@ -81,5 +71,5 @@ ReactDOM.render(
       </Fragment>
     </Router>
   </ApolloProvider>,
-  document.getElementById('root'),
+  document.getElementById('root')
 );
