@@ -4,7 +4,7 @@ const { maxBy } = require('lodash');
 const { prisma } = require('./generated/prisma-client');
 require('dotenv').config();
 
-async function *fetchActivities({ accessToken, userId }) {
+async function *fetchActivities({ accessToken, userId, fetchAll = false }) {
   const [latestCycling] = await prisma.cyclingWorkouts({
     orderBy: 'startDate_ASC',
     last: 1,
@@ -16,7 +16,7 @@ async function *fetchActivities({ accessToken, userId }) {
     where: { userId }
   });
   const latest = maxBy([latestCycling, latestRunning], 'startDate');
-  let startDate = moment.utc(latest ? latest.startDate : '2017-01-01')
+  let startDate = moment.utc(!fetchAll && latest ? latest.startDate : '2017-01-01')
     .valueOf() / 1000;
   let hasData = true;
   while (hasData) {
