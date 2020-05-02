@@ -69,7 +69,7 @@ ReactDOM.render(
             Cycling cumulative
           </NavLink>
         </nav>
-        <div className="fl w-100 pl4 pr4">
+        <div className="fl w-100">
           <Switch>
             <Route exact path="/" component={() => <HomePage />} />
             <Route path="/running" component={() => <WorkoutMonthlyPage type="running" />} />

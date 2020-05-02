@@ -1,9 +1,10 @@
 @import 'https://fonts.googleapis.com/css?family=Open+Sans:300, 400';
+@import 'https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2';
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Baloo Bhaina 2';
   background: rgba(0, 0, 0, 0.05);
 }
 
@@ -132,3 +133,82 @@ html {
   }
 }
 
+.home-page {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tile {
+  flex: 1 0 300px;
+  height: auto;
+  max-width: 300px;
+  padding: 10px;
+  text-align: center;
+}
+
+@media only screen and (max-width: 400px) {
+  .tile {
+    max-width: 400px;
+  }
+}
+
+.tile:nth-child(1) {
+  background-color: #ffbe0b;
+}
+.tile:nth-child(2) {
+  background-color: #fb5607;
+}
+.tile:nth-child(3) {
+  background-color: #ff006e;
+}
+.tile:nth-child(4) {
+  background-color: #8338ec;
+}
+.tile:nth-child(5) {
+  background-color: #3a86ff;
+}
+.tile:nth-child(6) {
+  background-color: #ffbe0b;
+}
+
+.tile:before {
+  content: '';
+  float: left;
+  padding-top: 100%;
+}
+
+.tile__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.tile__title {
+  flex-grow: 1;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.tile__primary-container {
+  flex-grow: 2;
+  position: relative;
+}
+
+.tile__primary {
+  font-size: 40px;
+  height: 40px;
+  left: 0;
+  margin-top: -16px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+}
+
+.tile__secondary {
+  flex-grow: 1;
+  font-size: 24px;
+}
