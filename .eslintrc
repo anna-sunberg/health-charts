@@ -1,0 +1,35 @@
+{
+  "plugins": ["prettier", "react", "react-hooks"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-console": "error",
+    "func-style": ["off", "expression"],
+    "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
+    "indent": "off",
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "off", // issues with hocs: https://github.com/facebook/react/pull/16712
+    "one-var": ["error", "never"]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
