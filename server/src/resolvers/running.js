@@ -112,7 +112,7 @@ module.exports = {
         .reduce(sumDistance, 0);
       const thisPeriod = allWorkouts.filter(({ startDate }) => moment.utc(startDate) >= startOfWeek)
         .reduce(sumDistance, 0);
-      return { lastPeriod, thisPeriod };
+      return { lastPeriod: Math.round(lastPeriod), thisPeriod: Math.round(thisPeriod) };
     },
     recentWorkouts: (parent, workout, context) => (
       context.prisma.runningWorkouts({ orderBy: 'startDate_DESC', first: 10 })
