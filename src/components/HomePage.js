@@ -6,41 +6,68 @@ import Loader from './Loader';
 import Tile from './Tile';
 
 const HomePage = () => {
-  const { loading, data, error } = useQuery(RUNNING_STATS_QUERY);
+  const { loading, data, error } = useQuery(STATS_QUERY);
   if (loading || error) {
     return <Loader error={error} />;
   }
 
-  const { weeklyStats, recentWorkout } = data.runningStats;
+  const { cyclingStats, runningStats } = data.stats;
   return (
     <div className="home-page">
       <Tile
         title="Running • Week"
-        primary={weeklyStats.thisPeriod}
-        secondary={weeklyStats.lastPeriod} unit="km"
+        primary={runningStats.weeklyStats.thisPeriod}
+        secondary={runningStats.weeklyStats.lastPeriod}
+        unit="km"
       />
       <Tile
         title="Running • Latest"
         time
-        primary={moment(recentWorkout.endDate).format('DD.MM.YYYY')}
-        secondary={moment(recentWorkout.endDate).format('HH:mm')}
+        primary={moment(runningStats.recentWorkout.endDate).format('DD.MM.YYYY')}
+        secondary={moment(runningStats.recentWorkout.endDate).format('HH:mm')}
+      />
+      <Tile
+        title="Cycling • Week"
+        primary={cyclingStats.weeklyStats.thisPeriod}
+        secondary={cyclingStats.weeklyStats.lastPeriod}
+        unit="km"
+      />
+      <Tile
+        title="Cycling • Latest"
+        time
+        primary={moment(cyclingStats.recentWorkout.endDate).format('DD.MM.YYYY')}
+        secondary={moment(cyclingStats.recentWorkout.endDate).format('HH:mm')}
       />
     </div>
   );
-}
+};
 
-const RUNNING_STATS_QUERY = gql`
-  query RunningStatsQuery {
-    runningStats {
-      weeklyStats {
-        lastPeriod
-        thisPeriod
+const STATS_QUERY = gql`
+  query StatsQuery {
+    stats {
+      runningStats {
+        weeklyStats {
+          lastPeriod
+          thisPeriod
+        }
+        recentWorkout {
+          endDate
+        }
+        recentWorkouts(limit: 1) {
+          endDate
+        }
       }
-      recentWorkout {
-        endDate
-      }
-      recentWorkouts {
-        endDate
+      cyclingStats {
+        weeklyStats {
+          lastPeriod
+          thisPeriod
+        }
+        recentWorkout {
+          endDate
+        }
+        recentWorkouts(limit: 1) {
+          endDate
+        }
       }
     }
   }

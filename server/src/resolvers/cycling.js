@@ -94,5 +94,42 @@ module.exports = {
         ...workout
       });
     }
+  },
+  Stats: { cyclingStats: () => ({}) },
+  CyclingStats: {
+    weeklyStats: async (parent, args, context) => {
+      const now = moment.utc();
+      const start = moment
+        .utc(now)
+        .startOf('isoWeek')
+        .add(-7, 'd');
+      const startOfWeek = moment(now).startOf('isoWeek');
+
+      const allWorkouts = await context.prisma.cyclingWorkouts({
+        where: {
+          startDate_gt: start.format('YYYY-MM-DD')
+        }
+      });
+      const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
+      const lastPeriod = allWorkouts
+        .filter(({ startDate }) => moment.utc(startDate) < startOfWeek)
+        .reduce(sumDistance, 0);
+      const thisPeriod = allWorkouts
+        .filter(({ startDate }) => moment.utc(startDate) >= startOfWeek)
+        .reduce(sumDistance, 0);
+      return { lastPeriod: Math.round(lastPeriod), thisPeriod: Math.round(thisPeriod) };
+    },
+    recentWorkouts: (parent, workout, context) =>
+      context.prisma.cyclingWorkouts({ orderBy: 'startDate_DESC', first: 10 }),
+    recentWorkout: async (parent, workout, context) => {
+      const workouts = await context.prisma.cyclingWorkouts({
+        orderBy: 'startDate_DESC',
+        first: 1
+      });
+      if (workouts.length) {
+        return workouts[0];
+      }
+      return null;
+    }
   }
 };

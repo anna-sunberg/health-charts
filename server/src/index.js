@@ -17,7 +17,8 @@ const resolvers = mergeResolvers.merge([
   runningResolvers,
   {
     BigInt,
-    DateTime: GraphQLDateTime
+    DateTime: GraphQLDateTime,
+    Query: { stats: () => ({}) }
   }
 ]);
 

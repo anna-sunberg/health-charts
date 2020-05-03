@@ -86,8 +86,7 @@ module.exports = {
           totalDistanceUnit: DISTANCE_UNIT
         };
       });
-    },
-    runningStats: () => ({})
+    }
   },
   Mutation: {
     createRunningWorkout(parent, workout, context) {
@@ -97,18 +96,20 @@ module.exports = {
     }
   },
   Stats: {
+    runningStats: () => ({})
+  },
+  RunningStats: {
     weeklyStats: async (parent, args, context) => {
       const now = moment.utc();
-      const start = moment
+      const startOfLastWeek = moment
         .utc(now)
-        .startOf('week')
-        .add(-6, 'd');
-      const startOfWeek = moment(now)
-        .startOf('week')
-        .add(1, 'd');
+        .startOf('isoWeek')
+        .add(-7, 'd');
+      const startOfWeek = moment(now).startOf('isoWeek');
+
       const allWorkouts = await context.prisma.runningWorkouts({
         where: {
-          startDate_gt: start.format('YYYY-MM-DD')
+          startDate_gt: startOfLastWeek.format('YYYY-MM-DD')
         }
       });
       const sumDistance = (sum, { totalDistance }) => sum + totalDistance;

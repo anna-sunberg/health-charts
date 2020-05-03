@@ -7,11 +7,12 @@ type Query {
   runningWorkouts: [Workout!]!
   runningTotalsByMonth: [WorkoutTotals!]!
   runningTotalsByDay: [WorkoutTotals!]!
-  runningStats: Stats
+  runningStats: Stats!
   cyclingWorkout(id: ID!): Workout
   cyclingWorkouts: [Workout!]!
   cyclingTotalsByMonth: [WorkoutTotals!]!
   cyclingTotalsByDay: [WorkoutTotals!]!
+  stats: Stats!
 }
 
 type Mutation {
@@ -85,9 +86,20 @@ type WorkoutTotalsByDay {
 }
 
 type Stats {
+  cyclingStats: CyclingStats!
+  runningStats: RunningStats!
+}
+
+type RunningStats {
   weeklyStats: PeriodStats!
   recentWorkout: Workout
-  recentWorkouts: [Workout!]!
+  recentWorkouts(limit: Int!): [Workout!]!
+}
+
+type CyclingStats {
+  weeklyStats: PeriodStats!
+  recentWorkout: Workout
+  recentWorkouts(limit: Int!): [Workout!]!
 }
 
 type PeriodStats {
