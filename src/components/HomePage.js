@@ -16,8 +16,8 @@ const HomePage = () => {
     <div className="home-page">
       <Tile
         title="Running • Week"
-        primary={runningStats.weeklyStats.thisPeriod}
-        secondary={runningStats.weeklyStats.lastPeriod}
+        primary={runningStats.weeklyStats.thisPeriod.distance}
+        secondary={runningStats.weeklyStats.lastPeriod.distance}
         unit="km"
       />
       <Tile
@@ -28,8 +28,8 @@ const HomePage = () => {
       />
       <Tile
         title="Cycling • Week"
-        primary={cyclingStats.weeklyStats.thisPeriod}
-        secondary={cyclingStats.weeklyStats.lastPeriod}
+        primary={cyclingStats.weeklyStats.thisPeriod.distance}
+        secondary={cyclingStats.weeklyStats.lastPeriod.distance}
         unit="km"
       />
       <Tile
@@ -47,25 +47,35 @@ const STATS_QUERY = gql`
     stats {
       runningStats {
         weeklyStats {
-          lastPeriod
-          thisPeriod
+          lastPeriod {
+            count
+            distance
+            duration
+          }
+          thisPeriod {
+            count
+            distance
+            duration
+          }
         }
         recentWorkout {
-          endDate
-        }
-        recentWorkouts(limit: 1) {
           endDate
         }
       }
       cyclingStats {
         weeklyStats {
-          lastPeriod
-          thisPeriod
+          lastPeriod {
+            count
+            distance
+            duration
+          }
+          thisPeriod {
+            count
+            distance
+            duration
+          }
         }
         recentWorkout {
-          endDate
-        }
-        recentWorkouts(limit: 1) {
           endDate
         }
       }

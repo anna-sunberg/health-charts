@@ -1,5 +1,6 @@
 const { times, round } = require('lodash');
 const moment = require('moment');
+const { getWeeklyStats } = require('../helpers/weekly');
 
 const MIN_YEAR = 2017;
 const DISTANCE_UNIT = 'km';
@@ -99,31 +100,10 @@ module.exports = {
     runningStats: () => ({})
   },
   RunningStats: {
-    weeklyStats: async (parent, args, context) => {
-      const now = moment.utc();
-      const startOfLastWeek = moment
-        .utc(now)
-        .startOf('isoWeek')
-        .add(-7, 'd');
-      const startOfWeek = moment(now).startOf('isoWeek');
-
-      const allWorkouts = await context.prisma.runningWorkouts({
-        where: {
-          startDate_gt: startOfLastWeek.format('YYYY-MM-DD')
-        }
-      });
-      const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
-      const lastPeriod = allWorkouts
-        .filter(({ startDate }) => moment.utc(startDate) < startOfWeek)
-        .reduce(sumDistance, 0);
-      const thisPeriod = allWorkouts
-        .filter(({ startDate }) => moment.utc(startDate) >= startOfWeek)
-        .reduce(sumDistance, 0);
-      return { lastPeriod: Math.round(lastPeriod), thisPeriod: Math.round(thisPeriod) };
-    },
-    recentWorkouts: (parent, workout, context) =>
-      context.prisma.runningWorkouts({ orderBy: 'startDate_DESC', first: 10 }),
-    recentWorkout: async (parent, workout, context) => {
+    weeklyStats: async (parent, args, context) => getWeeklyStats(context.prisma, 'running'),
+    recentWorkouts: (parent, { limit }, context) =>
+      context.prisma.runningWorkouts({ orderBy: 'startDate_DESC', first: limit }),
+    recentWorkout: async (parent, args, context) => {
       const workouts = await context.prisma.runningWorkouts({
         orderBy: 'startDate_DESC',
         first: 1

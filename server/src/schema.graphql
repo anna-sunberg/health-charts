@@ -91,18 +91,24 @@ type Stats {
 }
 
 type RunningStats {
-  weeklyStats: PeriodStats!
+  weeklyStats: WeeklyStats!
   recentWorkout: Workout
   recentWorkouts(limit: Int!): [Workout!]!
 }
 
 type CyclingStats {
-  weeklyStats: PeriodStats!
+  weeklyStats: WeeklyStats!
   recentWorkout: Workout
   recentWorkouts(limit: Int!): [Workout!]!
 }
 
+type WeeklyStats {
+  lastPeriod: PeriodStats!
+  thisPeriod: PeriodStats!
+}
+
 type PeriodStats {
-  lastPeriod: Float!
-  thisPeriod: Float!
+  distance: Float!
+  count: Int!
+  duration: Float!
 }
