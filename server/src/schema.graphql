@@ -61,6 +61,8 @@ type Workout {
   totalEnergyBurned: Float!
   totalEnergyBurnedUnit: String!
   sourceName: String
+  pace: String
+  speed: String
 }
 
 type WorkoutTotals {

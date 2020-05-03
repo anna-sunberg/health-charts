@@ -96,6 +96,15 @@ module.exports = {
       });
     }
   },
+  Workout: {
+    pace: ({ duration, totalDistance, totalDistanceUnit }) => {
+      const pace = duration / totalDistance;
+      const formattedPace = moment('0:0:0', 'H:m:s')
+        .add(pace, 'm')
+        .format('mm:ss');
+      return `${formattedPace} min/${totalDistanceUnit}`;
+    }
+  },
   Stats: {
     runningStats: () => ({})
   },

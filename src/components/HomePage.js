@@ -56,6 +56,7 @@ const STATS_QUERY = gql`
         recentWorkout {
           duration
           endDate
+          pace
           totalDistance
           totalDistanceUnit
           totalEnergyBurned
@@ -78,6 +79,7 @@ const STATS_QUERY = gql`
         recentWorkout {
           duration
           endDate
+          speed
           totalDistance
           totalDistanceUnit
           totalEnergyBurned

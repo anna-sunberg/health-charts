@@ -96,6 +96,10 @@ module.exports = {
       });
     }
   },
+  Workout: {
+    speed: ({ duration, totalDistance, totalDistanceUnit }) =>
+      `${round(totalDistance / (duration / 60), 2)} ${totalDistanceUnit}/h`
+  },
   Stats: { cyclingStats: () => ({}) },
   CyclingStats: {
     weeklyStats: async (parent, args, context) => getWeeklyStats(context.prisma, 'cycling'),
