@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import Loader from './Loader';
 import Tile from './Tile';
+import WorkoutTile from './WorkoutTile';
 
 const HomePage = () => {
   const { loading, data, error } = useQuery(STATS_QUERY);
@@ -20,24 +21,18 @@ const HomePage = () => {
         secondary={runningStats.weeklyStats.lastPeriod.distance}
         unit="km"
       />
-      <Tile
-        title="Running • Latest"
-        time
-        primary={moment(runningStats.recentWorkout.endDate).format('DD.MM.YYYY')}
-        secondary={moment(runningStats.recentWorkout.endDate).format('HH:mm')}
-      />
+      {runningStats.recentWorkout && (
+        <WorkoutTile workout={runningStats.recentWorkout} title="Running • Latest" />
+      )}
       <Tile
         title="Cycling • Week"
         primary={cyclingStats.weeklyStats.thisPeriod.distance}
         secondary={cyclingStats.weeklyStats.lastPeriod.distance}
         unit="km"
       />
-      <Tile
-        title="Cycling • Latest"
-        time
-        primary={moment(cyclingStats.recentWorkout.endDate).format('DD.MM.YYYY')}
-        secondary={moment(cyclingStats.recentWorkout.endDate).format('HH:mm')}
-      />
+      {cyclingStats.recentWorkout && (
+        <WorkoutTile workout={cyclingStats.recentWorkout} title="Cycling • Latest" />
+      )}
     </div>
   );
 };
@@ -59,7 +54,12 @@ const STATS_QUERY = gql`
           }
         }
         recentWorkout {
+          duration
           endDate
+          totalDistance
+          totalDistanceUnit
+          totalEnergyBurned
+          totalEnergyBurnedUnit
         }
       }
       cyclingStats {
@@ -76,7 +76,12 @@ const STATS_QUERY = gql`
           }
         }
         recentWorkout {
+          duration
           endDate
+          totalDistance
+          totalDistanceUnit
+          totalEnergyBurned
+          totalEnergyBurnedUnit
         }
       }
     }
