@@ -1,6 +1,6 @@
 const { times, round } = require('lodash');
 const moment = require('moment');
-const { getWeeklyStats } = require('../helpers/weekly');
+const { getWeeklyStats, getMonthlyStats } = require('../helpers/period-stats');
 
 const MIN_YEAR = 2017;
 const DISTANCE_UNIT = 'km';
@@ -102,6 +102,7 @@ module.exports = {
   },
   Stats: { cyclingStats: () => ({}) },
   CyclingStats: {
+    monthlyStats: async (parent, args, context) => getMonthlyStats(context.prisma, 'cycling'),
     weeklyStats: async (parent, args, context) => getWeeklyStats(context.prisma, 'cycling'),
     recentWorkouts: (parent, { limit }, context) =>
       context.prisma.cyclingWorkouts({ orderBy: 'startDate_DESC', first: limit }),

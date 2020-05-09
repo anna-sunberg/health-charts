@@ -1,7 +1,6 @@
 import React from 'react';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
-import moment from 'moment';
 import Loader from './Loader';
 import Tile from './Tile';
 import WorkoutTile from './WorkoutTile';
@@ -21,6 +20,12 @@ const HomePage = () => {
         secondary={runningStats.weeklyStats.lastPeriod.distance}
         unit="km"
       />
+      <Tile
+        title="Running • Month"
+        primary={runningStats.monthlyStats.thisPeriod.distance}
+        secondary={runningStats.monthlyStats.lastPeriod.distance}
+        unit="km"
+      />
       {runningStats.recentWorkout && (
         <WorkoutTile workout={runningStats.recentWorkout} title="Running • Latest" />
       )}
@@ -28,6 +33,12 @@ const HomePage = () => {
         title="Cycling • Week"
         primary={cyclingStats.weeklyStats.thisPeriod.distance}
         secondary={cyclingStats.weeklyStats.lastPeriod.distance}
+        unit="km"
+      />
+      <Tile
+        title="Cycling • Month"
+        primary={cyclingStats.monthlyStats.thisPeriod.distance}
+        secondary={cyclingStats.monthlyStats.lastPeriod.distance}
         unit="km"
       />
       {cyclingStats.recentWorkout && (
@@ -53,6 +64,18 @@ const STATS_QUERY = gql`
             duration
           }
         }
+        monthlyStats {
+          lastPeriod {
+            count
+            distance
+            duration
+          }
+          thisPeriod {
+            count
+            distance
+            duration
+          }
+        }
         recentWorkout {
           duration
           endDate
@@ -65,6 +88,18 @@ const STATS_QUERY = gql`
       }
       cyclingStats {
         weeklyStats {
+          lastPeriod {
+            count
+            distance
+            duration
+          }
+          thisPeriod {
+            count
+            distance
+            duration
+          }
+        }
+        monthlyStats {
           lastPeriod {
             count
             distance
