@@ -92,9 +92,9 @@ html {
 }
 
 .tile {
-  flex: 1 0 300px;
+  flex: 1 0 240px;
   height: auto;
-  max-width: 300px;
+  max-width: 480px;
   padding: 10px;
   text-align: center;
 }
