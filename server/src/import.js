@@ -17,7 +17,10 @@ async function* fetchActivities({ accessToken, userId, fetchAll = false }) {
   });
   const latest = maxBy([latestCycling, latestRunning], 'startDate');
   let startDate =
-    moment.utc(!fetchAll && latest ? latest.startDate : '2017-01-01').valueOf() / 1000;
+    moment
+      .utc(!fetchAll && latest ? latest.startDate : '2017-01-01')
+      .add(-14, 'd')
+      .valueOf() / 1000;
   let hasData = true;
   while (hasData) {
     console.log(`Fetching data after ${moment(startDate * 1000).format()}`);
@@ -43,10 +46,11 @@ async function* fetchActivities({ accessToken, userId, fetchAll = false }) {
   }
 }
 
-module.exports = async (req, res, next) => {
+module.exports = async (req, res) => {
   try {
     const { accessToken, id: userId } = req.user;
     let counter = 0;
+
     for await (let activities of fetchActivities({ accessToken, userId })) {
       await Promise.all(
         activities.map(async ({ id, type, start_date }) => {
@@ -54,7 +58,7 @@ module.exports = async (req, res, next) => {
 
           if (type === 'Run') {
             const existingEntry = await prisma.runningWorkouts({
-              where: { startDate }
+              where: { stravaId: `${id}` }
             });
             if (!existingEntry.length) {
               const response = await fetch(`https://www.strava.com/api/v3/activities/${id}`, {
@@ -62,31 +66,36 @@ module.exports = async (req, res, next) => {
               });
               const activity = await response.json();
 
-              await prisma.createRunningWorkout({
-                userId,
-                stravaId: `${activity.id}`,
-                startDate: moment.utc(activity.start_date).format(),
-                endDate: moment
-                  .utc(activity.start_date)
-                  .add(activity.elapsed_time)
-                  .format(),
-                totalDistance: activity.distance / 1000,
-                totalDistanceUnit: 'km',
-                duration: activity.moving_time / 60,
-                totalAscent: activity.total_elevation_gain / 1000,
-                totalAscentUnit: 'km',
-                totalEnergyBurned: activity.calories,
-                totalEnergyBurnedUnit: 'kcal',
-                sourceName: 'strava'
-              });
-              counter++;
-              console.log(`Processed run stravaId=${activity.id} from ${startDate}`);
+              try {
+                await prisma.createRunningWorkout({
+                  userId,
+                  stravaId: `${activity.id}`,
+                  startDate: moment.utc(activity.start_date).format(),
+                  endDate: moment
+                    .utc(activity.start_date)
+                    .add(activity.elapsed_time)
+                    .format(),
+                  totalDistance: activity.distance / 1000,
+                  totalDistanceUnit: 'km',
+                  duration: activity.moving_time / 60,
+                  totalAscent: activity.total_elevation_gain / 1000,
+                  totalAscentUnit: 'km',
+                  totalEnergyBurned: activity.calories,
+                  totalEnergyBurnedUnit: 'kcal',
+                  sourceName: 'strava'
+                });
+                counter++;
+                console.log(`Processed run stravaId=${activity.id} from ${startDate}`);
+              } catch (err) {
+                console.log(`Error in stravaId=${activity.id}`);
+                console.log(err);
+              }
             }
           }
 
           if (type === 'Ride') {
             const existingEntry = await prisma.cyclingWorkouts({
-              where: { startDate }
+              where: { stravaId: `${id}` }
             });
             if (!existingEntry.length) {
               const response = await fetch(`https://www.strava.com/api/v3/activities/${id}`, {
