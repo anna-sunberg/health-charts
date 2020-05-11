@@ -14,33 +14,13 @@ const HomePage = () => {
   const { cyclingStats, runningStats } = data.stats;
   return (
     <div className="home-page">
-      <Tile
-        title="Running • Week"
-        primary={runningStats.weeklyStats.thisPeriod.distance}
-        secondary={runningStats.weeklyStats.lastPeriod.distance}
-        unit="km"
-      />
-      <Tile
-        title="Running • Month"
-        primary={runningStats.monthlyStats.thisPeriod.distance}
-        secondary={runningStats.monthlyStats.lastPeriod.distance}
-        unit="km"
-      />
+      <Tile title="Running • Week" period="week" stats={runningStats.weeklyStats} unit="km" />
+      <Tile title="Running • Month" period="month" stats={runningStats.monthlyStats} unit="km" />
       {runningStats.recentWorkout && (
         <WorkoutTile workout={runningStats.recentWorkout} title="Running • Latest" />
       )}
-      <Tile
-        title="Cycling • Week"
-        primary={cyclingStats.weeklyStats.thisPeriod.distance}
-        secondary={cyclingStats.weeklyStats.lastPeriod.distance}
-        unit="km"
-      />
-      <Tile
-        title="Cycling • Month"
-        primary={cyclingStats.monthlyStats.thisPeriod.distance}
-        secondary={cyclingStats.monthlyStats.lastPeriod.distance}
-        unit="km"
-      />
+      <Tile title="Cycling • Week" period="week" stats={cyclingStats.weeklyStats} unit="km" />
+      <Tile title="Cycling • Month" period="month" stats={cyclingStats.monthlyStats} unit="km" />
       {cyclingStats.recentWorkout && (
         <WorkoutTile workout={cyclingStats.recentWorkout} title="Cycling • Latest" />
       )}
