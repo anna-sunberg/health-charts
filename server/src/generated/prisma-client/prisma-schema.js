@@ -342,6 +342,7 @@ input CyclingWorkoutWhereInput {
 
 input CyclingWorkoutWhereUniqueInput {
   id: ID
+  stravaId: String
 }
 
 scalar DateTime
@@ -722,6 +723,7 @@ input RunningWorkoutWhereInput {
 
 input RunningWorkoutWhereUniqueInput {
   id: ID
+  stravaId: String
 }
 
 type Subscription {

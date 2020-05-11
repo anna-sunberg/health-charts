@@ -285,6 +285,7 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type CyclingWorkoutWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
+  stravaId?: Maybe<String>;
 }>;
 
 export interface CyclingWorkoutWhereInput {
@@ -463,6 +464,7 @@ export interface CyclingWorkoutWhereInput {
 
 export type RunningWorkoutWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
+  stravaId?: Maybe<String>;
 }>;
 
 export interface RunningWorkoutWhereInput {

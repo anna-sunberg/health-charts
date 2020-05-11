@@ -1,6 +1,6 @@
 type RunningWorkout {
   id: ID! @id
-  stravaId: String!
+  stravaId: String! @unique
   createdAt: DateTime! @createdAt
   userId: String!
   startDate: DateTime!
@@ -18,7 +18,7 @@ type RunningWorkout {
 
 type CyclingWorkout {
   id: ID! @id
-  stravaId: String!
+  stravaId: String! @unique
   createdAt: DateTime! @createdAt
   userId: String!
   startDate: DateTime!
