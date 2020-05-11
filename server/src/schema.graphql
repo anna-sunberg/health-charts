@@ -115,4 +115,6 @@ type PeriodStats {
   distance: Float!
   count: Int!
   duration: Float!
+  averagePace: String
+  averageSpeed: String
 }

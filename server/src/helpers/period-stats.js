@@ -1,9 +1,10 @@
 const moment = require('moment');
+const { round } = require('lodash');
 
 const sumDistance = (sum, { totalDistance }) => sum + totalDistance;
 const sumDuration = (sum, { duration }) => sum + duration;
 
-getCollection = (prisma, workoutType) => {
+const getCollection = (prisma, workoutType) => {
   if (workoutType === 'running') {
     return prisma.runningWorkouts;
   }
@@ -13,7 +14,37 @@ getCollection = (prisma, workoutType) => {
   return null;
 };
 
-getPeriodData = async (prisma, workoutType, lastPeriodStart, thisPeriodStart) => {
+const calcStats = (workouts, type) => {
+  const distance = workouts.reduce(sumDistance, 0);
+  const duration = workouts.reduce(sumDuration, 0);
+  return {
+    distance: Math.round(distance),
+    duration: Math.round(duration),
+    count: workouts.length,
+    ...calcSpeed(distance, duration, type)
+  };
+};
+
+const calcSpeed = (distance, duration, type) => {
+  if (distance === 0) {
+    return null;
+  }
+  if (type === 'running') {
+    const pace = duration / distance;
+    return {
+      averagePace: `${moment()
+        .startOf('h')
+        .add(pace, 'm')
+        .format('m:ss')} min/km`
+    };
+  }
+  if (type === 'cycling') {
+    return { averageSpeed: `${round((distance / duration) * 60, 2)} km/h` };
+  }
+  return null;
+};
+
+const getPeriodData = async (prisma, workoutType, lastPeriodStart, thisPeriodStart) => {
   const collection = getCollection(prisma, workoutType);
   const allWorkouts = await collection({
     where: {
@@ -29,16 +60,8 @@ getPeriodData = async (prisma, workoutType, lastPeriodStart, thisPeriodStart) =>
   );
 
   return {
-    lastPeriod: {
-      distance: Math.round(lastPeriodWorkouts.reduce(sumDistance, 0)),
-      count: lastPeriodWorkouts.length,
-      duration: Math.round(lastPeriodWorkouts.reduce(sumDuration, 0))
-    },
-    thisPeriod: {
-      distance: Math.round(thisPeriodWorkouts.reduce(sumDistance, 0)),
-      count: thisPeriodWorkouts.length,
-      duration: Math.round(thisPeriodWorkouts.reduce(sumDuration, 0))
-    }
+    lastPeriod: calcStats(lastPeriodWorkouts, workoutType),
+    thisPeriod: calcStats(thisPeriodWorkouts, workoutType)
   };
 };
 
