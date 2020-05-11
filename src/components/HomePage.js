@@ -53,75 +53,72 @@ const STATS_QUERY = gql`
     stats {
       runningStats {
         weeklyStats {
-          lastPeriod {
-            count
-            distance
-            duration
-          }
-          thisPeriod {
-            count
-            distance
-            duration
-          }
+          ...RunningTimePeriodFragment
         }
         monthlyStats {
-          lastPeriod {
-            count
-            distance
-            duration
-          }
-          thisPeriod {
-            count
-            distance
-            duration
-          }
+          ...RunningTimePeriodFragment
         }
         recentWorkout {
-          duration
-          endDate
           pace
-          totalDistance
-          totalDistanceUnit
-          totalEnergyBurned
-          totalEnergyBurnedUnit
+          ...WorkoutFragment
         }
       }
       cyclingStats {
         weeklyStats {
-          lastPeriod {
-            count
-            distance
-            duration
-          }
-          thisPeriod {
-            count
-            distance
-            duration
-          }
+          ...CyclingTimePeriodFragment
         }
         monthlyStats {
-          lastPeriod {
-            count
-            distance
-            duration
-          }
-          thisPeriod {
-            count
-            distance
-            duration
-          }
+          ...CyclingTimePeriodFragment
         }
         recentWorkout {
-          duration
-          endDate
           speed
-          totalDistance
-          totalDistanceUnit
-          totalEnergyBurned
-          totalEnergyBurnedUnit
+          ...WorkoutFragment
         }
       }
     }
+  }
+
+  fragment PeriodStatsFragment on PeriodStats {
+    count
+    distance
+    duration
+  }
+
+  fragment RunningPeriodStatsFragment on PeriodStats {
+    averagePace
+    ...PeriodStatsFragment
+  }
+
+  fragment RunningTimePeriodFragment on TimePeriodStats {
+    lastPeriod {
+      ...RunningPeriodStatsFragment
+    }
+    thisPeriod {
+      ...RunningPeriodStatsFragment
+    }
+  }
+
+  fragment CyclingPeriodStatsFragment on PeriodStats {
+    averageSpeed
+    ...PeriodStatsFragment
+  }
+
+  fragment CyclingTimePeriodFragment on TimePeriodStats {
+    lastPeriod {
+      ...CyclingPeriodStatsFragment
+    }
+    thisPeriod {
+      ...CyclingPeriodStatsFragment
+    }
+  }
+
+  fragment WorkoutFragment on Workout {
+    duration
+    endDate
+    totalDistance
+    totalDistanceUnit
+    totalEnergyBurned
+    totalEnergyBurnedUnit
   }
 `;
 
