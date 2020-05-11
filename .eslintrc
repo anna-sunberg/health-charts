@@ -25,7 +25,8 @@
     "indent": "off",
     "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
     "react-hooks/exhaustive-deps": "off", // issues with hocs: https://github.com/facebook/react/pull/16712
-    "one-var": ["error", "never"]
+    "one-var": ["error", "never"],
+    "react/prop-types": "off"
   },
   "settings": {
     "react": {
