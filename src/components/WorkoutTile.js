@@ -15,11 +15,18 @@ const WorkoutTile = ({ title, workout }) => (
   <div className="tile">
     <div className="tile__content">
       <div className="tile__title">{title}</div>
-      <div>{moment(workout.endDate).format(`D.M.YYYY ${HMS_FORMAT}`)}</div>
-      <div>{workout.speed || workout.pace}</div>
-      <div>{`${round(workout.totalDistance, 2)} ${workout.totalDistanceUnit}`}</div>
-      <div>{formatDuration(workout.duration)}</div>
-      <div>{`${workout.totalEnergyBurned} ${workout.totalEnergyBurnedUnit}`}</div>
+      <div className="tile__primary-container" />
+      <div className="tile__secondary">
+        {moment(workout.endDate).format(`D.M.YYYY ${HMS_FORMAT}`)}
+      </div>
+      <div className="tile__secondary">{workout.speed || workout.pace}</div>
+      <div className="tile__secondary">{`${round(workout.totalDistance, 2)} ${
+        workout.totalDistanceUnit
+      }`}</div>
+      <div className="tile__secondary">{formatDuration(workout.duration)}</div>
+      <div className="tile__secondary">{`${workout.totalEnergyBurned} ${
+        workout.totalEnergyBurnedUnit
+      }`}</div>
     </div>
   </div>
 );
