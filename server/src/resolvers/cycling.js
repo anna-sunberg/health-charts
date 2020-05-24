@@ -8,13 +8,15 @@ const getTotalDistance = (total, { totalDistance }) => total + totalDistance;
 
 module.exports = {
   Query: {
-    cyclingWorkouts: (parent, args, context) => context.prisma.cyclingWorkouts(),
+    cyclingWorkouts: (parent, args, context) =>
+      context.prisma.cyclingWorkouts({ where: { userId: context.user.id } }),
     cyclingWorkout: (parent, { id }, context) => context.prisma.cyclingWorkout({ id }),
     cyclingTotalsByDay: async (parent, args, context) => {
       const now = moment.utc().startOf('year');
       const rawWorkouts = await context.prisma.cyclingWorkouts({
         where: {
-          startDate_gt: `${MIN_YEAR}-01-01`
+          startDate_gt: `${MIN_YEAR}-01-01`,
+          userId: context.user.id
         }
       });
       const workouts = rawWorkouts.map(workout => {
@@ -55,7 +57,8 @@ module.exports = {
       const allMonths = times(12);
       const rawWorkouts = await context.prisma.cyclingWorkouts({
         where: {
-          startDate_gt: `${MIN_YEAR}-01-01`
+          startDate_gt: `${MIN_YEAR}-01-01`,
+          userId: context.user.id
         }
       });
       const workouts = rawWorkouts.map(workout => {
@@ -105,11 +108,16 @@ module.exports = {
     monthlyStats: async (parent, args, context) => getMonthlyStats(context.prisma, 'cycling'),
     weeklyStats: async (parent, args, context) => getWeeklyStats(context.prisma, 'cycling'),
     recentWorkouts: (parent, { limit }, context) =>
-      context.prisma.cyclingWorkouts({ orderBy: 'startDate_DESC', first: limit }),
+      context.prisma.cyclingWorkouts({
+        orderBy: 'startDate_DESC',
+        first: limit,
+        where: { userId: context.user.id }
+      }),
     recentWorkout: async (parent, args, context) => {
       const workouts = await context.prisma.cyclingWorkouts({
         orderBy: 'startDate_DESC',
-        first: 1
+        first: 1,
+        where: { userId: context.user.id }
       });
       if (workouts.length) {
         return workouts[0];

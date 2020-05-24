@@ -25,9 +25,7 @@ const resolvers = mergeResolvers.merge([
 const server = new GraphQLServer({
   typeDefs: path.join(__dirname, 'schema.graphql'),
   resolvers,
-  context: {
-    prisma
-  }
+  context: session => ({ prisma, user: session.request.user })
 });
 
 server.express.use(cookieParser());
