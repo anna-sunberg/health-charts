@@ -46,9 +46,9 @@ async function* fetchActivities({ accessToken, userId, fetchAll = false }) {
   }
 }
 
-module.exports = async (req, res) => {
+module.exports = async user => {
   try {
-    const { accessToken, id: userId } = req.user;
+    const { accessToken, id: userId } = user;
     let counter = 0;
 
     for await (let activities of fetchActivities({ accessToken, userId })) {
@@ -128,9 +128,10 @@ module.exports = async (req, res) => {
       );
     }
 
-    res.json({ inserted: counter });
+    console.log(`Imported ${counter} activities`);
   } catch (err) {
-    console.error(err);
-    res.sendStatus(500);
+    console.error(`Error while importing`, err);
   }
 };
+
+module.exports.fetchActivities = fetchActivities;

@@ -1,5 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga');
 const express = require('express');
+const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -9,8 +10,9 @@ const mergeResolvers = require('graphql-merge-resolvers');
 const GraphQLDateTime = require('graphql-type-datetime');
 const cyclingResolvers = require('./resolvers/cycling');
 const runningResolvers = require('./resolvers/running');
-const importRunningFromStrava = require('./import');
+const importActivitiesFromStrava = require('./import');
 const { stravaOAuth, checkAccessToken } = require('./strava-oauth');
+const { stravaWebhook, createWebhookSubscription } = require('./strava-webhook');
 
 const resolvers = mergeResolvers.merge([
   cyclingResolvers,
@@ -28,9 +30,14 @@ const server = new GraphQLServer({
   context: session => ({ prisma, user: session.request.user })
 });
 
+if (process.env.NODE_ENV !== 'development') {
+  createWebhookSubscription();
+}
+
 server.express.use(cookieParser());
+server.express.use(bodyParser.json());
 server.express.all('*', async (req, res, next) => {
-  if (req.path.indexOf('/auth') === 0) {
+  if (req.path.indexOf('/auth') === 0 || req.path.indexOf('/webhook') === 0) {
     next();
   } else {
     if (!req.cookies.jwt) {
@@ -51,7 +58,8 @@ server.express.all('*', async (req, res, next) => {
   }
 });
 server.express.use('/auth', stravaOAuth);
-server.express.route('/import').get(importRunningFromStrava);
+server.express.use('/webhook', stravaWebhook);
+server.express.route('/import').get((req, res) => importActivitiesFromStrava(req.user));
 server.express.use(express.static(path.join(__dirname, '../../', 'build')));
 server.express.get('/*', (req, res, next) => {
   if (req.path.indexOf('/api') === 0) {

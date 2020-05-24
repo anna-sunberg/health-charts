@@ -11,8 +11,6 @@ import WorkoutMonthlyPage from './components/WorkoutMonthlyPage';
 import 'tachyons';
 import './index.css';
 
-process.env.NODE_ENV !== 'development' && fetch('/import');
-
 const client = new ApolloClient({ uri: '/api' });
 
 ReactDOM.render(
