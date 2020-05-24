@@ -18,9 +18,12 @@ const WorkoutTile = ({ title, workout }) => (
       <div className="tile__primary-container">
         <div
           className="tile__primary"
-          title={moment(workout.endDate).format(`D.M.YYYY ${HMS_FORMAT}`)}
+          title={moment
+            .utc(workout.endDate)
+            .add(moment.parseZone().utcOffset(), 'm')
+            .format(`D.M.YYYY ${HMS_FORMAT}`)}
         >
-          {moment(workout.endDate).from()}
+          {moment.utc(workout.endDate).from()}
         </div>
       </div>
       <div className="tile__secondary">{workout.speed || workout.pace}</div>
