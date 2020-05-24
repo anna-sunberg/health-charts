@@ -2,10 +2,11 @@
 @import 'https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2';
 
 body {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111;
+  font-family: 'Baloo Bhaina 2';
   margin: 0;
   padding: 0;
-  font-family: 'Baloo Bhaina 2';
-  background: rgba(0, 0, 0, 0.05);
 }
 
 html {
@@ -148,10 +149,10 @@ html {
 }
 
 .tile__primary {
-  font-size: 40px;
+  font-size: 36px;
 }
 
 .tile__secondary {
   flex-grow: 1;
-  font-size: 20px;
+  font-size: 18px;
 }
