@@ -73,7 +73,7 @@ module.exports = async user => {
                   startDate: moment.utc(activity.start_date).format(),
                   endDate: moment
                     .utc(activity.start_date)
-                    .add(activity.elapsed_time)
+                    .add(activity.elapsed_time, 's')
                     .format(),
                   totalDistance: activity.distance / 1000,
                   totalDistanceUnit: 'km',
@@ -109,7 +109,7 @@ module.exports = async user => {
                 startDate,
                 endDate: moment
                   .utc(activity.start_date)
-                  .add(activity.elapsed_time)
+                  .add(activity.elapsed_time, 's')
                   .format(),
                 totalDistance: activity.distance / 1000,
                 totalDistanceUnit: 'km',
