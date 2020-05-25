@@ -61,6 +61,7 @@ ReactDOM.render(
         <div className="fl w-100">
           <Switch>
             <Route exact path="/" component={() => <HomePage />} />
+            <Route path="/refresh" component={() => <HomePage refresh />} />
             <Route path="/running" component={() => <WorkoutMonthlyPage type="running" />} />
             <Route path="/cycling" component={() => <WorkoutMonthlyPage type="cycling" />} />
             <Route path="/running_day" component={() => <WorkoutDailyPage type="running" />} />

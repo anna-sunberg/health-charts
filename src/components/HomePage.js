@@ -5,10 +5,14 @@ import Loader from './Loader';
 import Tile from './Tile';
 import WorkoutTile from './WorkoutTile';
 
-const HomePage = () => {
+const HomePage = ({ refresh = false }) => {
   const { loading, data, error } = useQuery(STATS_QUERY);
   if (loading || error) {
     return <Loader error={error} />;
+  }
+
+  if (refresh) {
+    fetch('/import');
   }
 
   const { cyclingStats, runningStats } = data.stats;
