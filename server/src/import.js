@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const moment = require('moment');
 const { maxBy } = require('lodash');
 const { prisma } = require('./generated/prisma-client');
+const { checkAccessToken } = require('./strava-oauth');
 require('dotenv').config();
 
 async function* fetchActivities({ accessToken, userId, fetchAll = false }) {
@@ -46,8 +47,9 @@ async function* fetchActivities({ accessToken, userId, fetchAll = false }) {
   }
 }
 
-module.exports = async user => {
+module.exports = async userFromDb => {
   try {
+    const user = await checkAccessToken(userFromDb);
     const { accessToken, id: userId } = user;
     let counter = 0;
 
