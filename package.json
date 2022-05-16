@@ -23,7 +23,7 @@
     "graphql-type-datetime": "^0.2.4",
     "graphql-yoga": "1.18.3",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "prisma-client-lib": "1.34.10",
